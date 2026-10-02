@@ -24,6 +24,8 @@ INIT_UI_EVENT_BINDINGS
 #include "storage/ConfigStore.h"
 #include "storage/StoragePreferences.h"
 #include "device/RelayManager.h"
+#include "device/SensorManager.h"      // 真实天气 / 温湿度 / PM2.5
+#include "logic/ui_text.h"             // setTextIfChanged（判据 = 控件实际文本）
 #include "network/MqttBridge.h"
 #include "scene/SceneManager.h"
 
@@ -247,11 +249,16 @@ static bool homeSwVisible(int i) {
     return ConfigStore::getInstance()->swVisible(i + 1);   // 统一走 ConfigStore（持久化口径）
 }
 
-static void applySwitchLayout() {
+// force=true：跳过"数量没变就不重排"的短路，无条件按当前 mask 重排一遍。
+//   ⚠️ 为什么需要它（与 refreshWx 同一类坑，2026-10-01）：sLastMask 是函数内 static，
+//   从屏保返回主页时若控件被重新实例化，卡片位置会回到 ui/home.json 的三卡默认坐标，
+//   而 sLastMask 仍等于当前 mask -> 直接 return，于是"只有 2 个开关却按 3 卡摆"的错布局
+//   会一直保持。所以页面初始化/每次 show 都 force 一次（幂等，重复设置同样坐标无副作用）。
+static void applySwitchLayout(bool force = false) {
     int mask = 0;
     for (int i = 0; i < 3; i++) if (homeSwVisible(i)) mask |= (1 << i);
     if (mask == 0) mask = 1;                           // 兜底：至少一个（配置页也拦了）
-    if (mask == sLastMask) return;                     // 没变化不动
+    if (!force && mask == sLastMask) return;           // 没变化不动
     sLastMask = mask;
 
     int vis[3], n = 0;
@@ -343,6 +350,45 @@ static void refreshHomeClock() {
     if (mTextDatePtr != NULL) mTextDatePtr->setText(buf);
 }
 
+// ── 主页顶栏：真实天气 / 温湿度 / PM2.5（2026-10-01 重做）────────
+//   改前：TextWxTemp(「26.5°C」)、TextWxText(「晴 26°C」) 是 ui/home.json 里写死的静态文案，
+//         这两个控件在 C++ 里**一次都没被引用过**（grep 零命中）—— 顶栏那两行字是贴图。
+//   改后：由 SensorManager 的真实数据驱动；没有数据就显示「读取中 / 获取中」，不编数字。
+//   文案用字：字库裁剪过，禁用 ℃ ° · μ ³（主字库无这些字形），温度用 "C"。见 tools/check_glyphs.js。
+//
+//   ⚠️ 2026-10-01 二次修正（钟工：「屏保返回主界面会变成获取中」）：
+//   原实现用 static sLastT/sLastW/sLastA 记「上次写进去的值」，值没变就跳过 setText。
+//   但从屏保返回时控件会被重新实例化，文本回到 ui/home.json 的静态占位（「读取中」「获取中」），
+//   而 static 缓存仍以为"已经写过了" -> 永不刷新，界面永久停在占位文案上。
+//   现改用 setTextIfChanged()（判据 = 控件当前实际文本，见 logic/ui_text.h），免疫重建/跨页。
+static void refreshWx() {
+    SensorManager* sm = SensorManager::getInstance();
+    static bool sLogged = false;
+    if (!sLogged) {
+        sLogged = true;   // 只打一次：现场排查「顶栏天气不显示」用（控件是否绑上 + 真值是什么）
+        LOGI("home: wx ptrs temp=%p text=%p air=%p | t=%.1f h=%.0f wx=%s pm25=%.1f aqi=%d has=%d",
+             (void*)mTextWxTempPtr, (void*)mTextWxTextPtr, (void*)mTextWxAirPtr,
+             sm->temp(), sm->hum(), sm->weather().c_str(), sm->pm25(), sm->aqi(),
+             sm->hasData() ? 1 : 0);
+    }
+    const bool has = sm->hasData();
+    char b[96];
+
+    std::string t = "读取中";
+    if (has) { snprintf(b, sizeof(b), "%.1fC", sm->temp()); t = b; }
+    setTextIfChanged(mTextWxTempPtr, t);
+
+    const std::string w = has ? sm->weather() : std::string("获取中");
+    setTextIfChanged(mTextWxTextPtr, w);
+
+    std::string a = "PM2.5 获取中";
+    if (sm->pm25() >= 0.0f) {
+        snprintf(b, sizeof(b), "PM2.5 %.0f %s", sm->pm25(), sm->aqiLevel().c_str());
+        a = b;
+    }
+    setTextIfChanged(mTextWxAirPtr, a);
+}
+
 // 装饰层触摸穿透（本页控件）
 static void passThroughDecorations() {
     ZKTextView* pass[] = {
@@ -421,10 +467,11 @@ static void onUI_init() {
     passThroughDecorations();
     registerListeners();
     refreshHomeClock();
+    refreshWx();
     refreshDevNames();
     refreshDevCards();
     refreshChips();
-    applySwitchLayout();          // 开机首次进主页也按配置重排
+    applySwitchLayout(true);     // 开机首次进主页：force 一次（控件可能是新建的，缓存不可信）
     noteActivity();
 }
 
@@ -439,10 +486,11 @@ static void onUI_show() {
     EASYUICONTEXT->setScreensaverEnable(true);    // 只有主页进屏保（钟工 09251751-1）
     EASYUICONTEXT->resetScreensaverTimeOut();
     refreshHomeClock();
+    refreshWx();
     refreshDevNames();
     refreshDevCards();
     refreshChips();
-    applySwitchLayout();          // 按键配置改过显隐 -> 回来即重排
+    applySwitchLayout(true);      // 每次进主页都 force（从屏保返回时控件可能被重建，缓存不可信）
     noteActivity();
 }
 
@@ -463,6 +511,7 @@ static bool onUI_Timer(int id) {
     switch (id) {
     case 0:
         refreshHomeClock();
+        refreshWx();              // 真实天气/温湿度/PM2.5（值变化才重绘）
         applySwitchLayout();      // 按键配置（子页/外部）改过显隐 -> ≤1s 跟随重排
         // HA 模式：当前生效情景变化（HA 回报）-> 重刷 chip 高亮（≤1s 跟随）
         if (ConfigStore::getInstance()->runMode() == ConfigStore::MODE_HA) {

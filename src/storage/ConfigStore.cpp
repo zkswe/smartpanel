@@ -25,6 +25,8 @@ static const char* kKeyBrightSs   = "sp_bright_ss";      // 0..100
 static const char* kKeyOffEnable  = "sp_off_en";         // 关屏总开关 0/1
 static const char* kKeyOffStart   = "sp_off_start";      // 0..23
 static const char* kKeyOffEnd     = "sp_off_end";        // 0..23
+static const char* kKeyOffStartMin= "sp_off_start_min";  // 0..59（内部刻度，UI 不暴露；缺省 0）
+static const char* kKeyOffEndMin  = "sp_off_end_min";    // 0..59
 static const char* kKeySsItemPfx  = "ss_item_";          // + item -> 1/0（sssetLogic 同键）
 static const char* kKeySsPosPfx   = "sp_ss_pos_";        // + item + "_x"/"_y"
 static const char* kKeySceneJson  = "sp_scene_json";
@@ -38,6 +40,9 @@ static const char* kKeyMqttUser   = "sp_mqtt_user";
 static const char* kKeyMqttPass   = "sp_mqtt_pass";
 static const char* kKeyVideoInt   = "sp_video_int";      // 轮播间隔秒（videoLogic 同键）
 static const char* kKeyPhotoSec   = "sp_photo_sec";      // 图片显示时长秒（默认 15）
+// 屏保声音（视频音轨；2026-10-01）：sp_ss_sound = 1/0（默认 1 开）、sp_ss_vol = 0..100（默认 60）
+static const char* kKeySsSound    = "sp_ss_sound";
+static const char* kKeySsVol      = "sp_ss_vol";
 static const char* kKeyQrUrl      = "sp_qr_url";         // 相册页二维码内容（非空则用它）
 static const char* kKeyMpAppId    = "sp_mp_appid";       // 微信小程序 AppID
 static const char* kKeyQrImgUrl   = "sp_qr_img_url";     // 远端小程序码图 URL（下载显示）
@@ -53,6 +58,22 @@ static const char* kQrUrlDefault =
 static const char* kKeyTemp       = "sp_temp";
 static const char* kKeyHum        = "sp_hum";
 static const char* kKeyWeather    = "sp_weather";
+// 天气 / 空气质量（真实数据，2026-10-01）：城市、经纬度、WMO 代码、PM2.5/PM10/AQI、上次成功时刻
+static const char* kKeyWxCity     = "sp_wx_city";
+static const char* kKeyWxLatLon   = "sp_wx_latlon";
+static const char* kKeyWxCode     = "sp_wx_code";
+static const char* kKeyWxPm25     = "sp_wx_pm25";
+static const char* kKeyWxPm10     = "sp_wx_pm10";
+static const char* kKeyWxAqi      = "sp_wx_aqi";
+static const char* kKeyWxMs       = "sp_wx_ms";
+static const char* kKeyWxOk       = "sp_wx_ok";      // 1 = 已成功取到过真实数据
+// 黄历（屏保顶部黄历区，2026-10-01）：整条记录 + 拉取时刻 + 有效标志
+static const char* kKeyAlmBlob    = "sp_alm_blob";    // "k=v\n" 多行记录
+static const char* kKeyAlmMs      = "sp_alm_ms";
+static const char* kKeyAlmOk      = "sp_alm_ok";
+// 默认位置 = 深圳福田（22.5431, 114.0579）。改城市走 UDP api: {"cmd":"config_weather","city":"杭州"}
+static const char* kWxCityDefault   = "深圳";
+static const char* kWxLatLonDefault = "22.5431,114.0579";
 
 ConfigStore* ConfigStore::getInstance() {
     static ConfigStore s;
@@ -313,6 +334,20 @@ int ConfigStore::offEndHour() {
     return v;
 }
 
+int ConfigStore::offStartMin() {
+    int v = StoragePreferences::getInt(kKeyOffStartMin, 0);
+    if (v < kOffMinMin) v = kOffMinMin;
+    if (v > kOffMinMax) v = kOffMinMax;
+    return v;
+}
+
+int ConfigStore::offEndMin() {
+    int v = StoragePreferences::getInt(kKeyOffEndMin, 0);
+    if (v < kOffMinMin) v = kOffMinMin;
+    if (v > kOffMinMax) v = kOffMinMax;
+    return v;
+}
+
 void ConfigStore::setOffPeriod(int startHour, int endHour) {
     if (startHour < kOffHourMin) startHour = kOffHourMin;
     if (startHour > kOffHourMax) startHour = kOffHourMax;
@@ -320,27 +355,35 @@ void ConfigStore::setOffPeriod(int startHour, int endHour) {
     if (endHour > kOffHourMax) endHour = kOffHourMax;
     StoragePreferences::putInt(kKeyOffStart, startHour);
     StoragePreferences::putInt(kKeyOffEnd, endHour);
+    // UI 只暴露小时 -> 写入时段即代表"整点"，清零分钟刻度（内部/调试用的分钟不残留）
+    StoragePreferences::putInt(kKeyOffStartMin, 0);
+    StoragePreferences::putInt(kKeyOffEndMin, 0);
     LOGD("ConfigStore: off period -> %d:00-%d:00", startHour, endHour);
 }
 
 bool ConfigStore::offPeriodValid() {
-    return offStartHour() != offEndHour();
+    int s = offStartHour() * 60 + offStartMin();
+    int e = offEndHour() * 60 + offEndMin();
+    return s != e;                                // 起止「分钟-of-day」相同=无效
 }
 
 bool ConfigStore::offPeriodLong() {
     // 时长 > 12h 的时段视为「长时段」（仅用于行值摘要提示）
-    int s = offStartHour(), e = offEndHour();
+    int s = offStartHour() * 60 + offStartMin();
+    int e = offEndHour() * 60 + offEndMin();
     if (s == e) return false;
-    int span = (e > s) ? (e - s) : (e + 24 - s);
-    return span > 12;
+    int span = (e > s) ? (e - s) : (e + 1440 - s);
+    return span > 720;
 }
 
-bool ConfigStore::inOffPeriod(int hour) {
+bool ConfigStore::inOffPeriod(int hour, int min) {
     if (!offEnabled()) return false;
-    int s = offStartHour(), e = offEndHour();
+    int s = offStartHour() * 60 + offStartMin();
+    int e = offEndHour() * 60 + offEndMin();
     if (s == e) return false;                     // 时段无效：不熄屏
-    if (s < e) return hour >= s && hour < e;
-    return hour >= s || hour < e;                 // 跨零点（如 22:00-7:00）
+    int cur = hour * 60 + min;
+    if (s < e) return cur >= s && cur < e;
+    return cur >= s || cur < e;                   // 跨零点（如 23:00-6:00）
 }
 
 // ── 屏保显示项（显隐 + 位置）────────────────────────────────
@@ -353,8 +396,10 @@ void ConfigStore::setSsItemVisible(const std::string& item, bool visible) {
 }
 
 void ConfigStore::ssItemPos(const std::string& item, int& x, int& y) {
-    x = StoragePreferences::getInt(kKeySsPosPfx + item + "_x", -1);
-    y = StoragePreferences::getInt(kKeySsPosPfx + item + "_y", -1);
+    // "未设置"用哨兵 kSsPosUnset。⚠️ 不能用 -1：钟工 2026-10-01 起屏保浮层允许
+    // **负坐标**（摆到屏幕外），-1 是合法位置。
+    x = StoragePreferences::getInt(kKeySsPosPfx + item + "_x", kSsPosUnset);
+    y = StoragePreferences::getInt(kKeySsPosPfx + item + "_y", kSsPosUnset);
 }
 
 void ConfigStore::setSsItemPos(const std::string& item, int x, int y) {
@@ -493,6 +538,35 @@ void ConfigStore::setPhotoIntervalSec(int sec) {
     LOGD("ConfigStore: photo interval -> %d s", sec);
 }
 
+// ── 屏保声音（视频音轨）────────────────────────────────────────
+bool ConfigStore::ssSoundEnabled() {
+    return StoragePreferences::getInt(kKeySsSound, 1) != 0;   // 默认开
+}
+
+void ConfigStore::setSsSoundEnabled(bool on) {
+    StoragePreferences::putInt(kKeySsSound, on ? 1 : 0);
+    LOGI("ConfigStore: ss sound -> %s", on ? "ON" : "MUTE");
+}
+
+int ConfigStore::ssVolume() {
+    int v = StoragePreferences::getInt(kKeySsVol, 60);        // 默认 60
+    if (v < kSsVolMin) v = kSsVolMin;
+    if (v > kSsVolMax) v = kSsVolMax;
+    return v;
+}
+
+void ConfigStore::setSsVolume(int v) {
+    if (v < kSsVolMin) v = kSsVolMin;
+    if (v > kSsVolMax) v = kSsVolMax;
+    StoragePreferences::putInt(kKeySsVol, v);
+    LOGI("ConfigStore: ss volume -> %d", v);
+}
+
+float ConfigStore::ssVolumeScale() {
+    if (!ssSoundEnabled()) return 0.0f;
+    return ssVolume() / 100.0f;
+}
+
 // ── 相册扫码二维码内容 / 小程序 AppID ────────────────────────
 std::string ConfigStore::qrUrl() {
     return StoragePreferences::getString(kKeyQrUrl, kQrUrlDefault);
@@ -538,4 +612,98 @@ void ConfigStore::setCachedTempHum(float temp, float hum) {
 
 void ConfigStore::setCachedWeather(const std::string& text) {
     StoragePreferences::putString(kKeyWeather, text);
+}
+
+// ── 天气 / 空气质量（真实数据）────────────────────────────────
+std::string ConfigStore::weatherCity() {
+    return StoragePreferences::getString(kKeyWxCity, kWxCityDefault);
+}
+
+void ConfigStore::setWeatherCity(const std::string& city) {
+    StoragePreferences::putString(kKeyWxCity, city);
+}
+
+std::string ConfigStore::weatherLatLon() {
+    return StoragePreferences::getString(kKeyWxLatLon, kWxLatLonDefault);
+}
+
+void ConfigStore::setWeatherLatLon(const std::string& latlon) {
+    StoragePreferences::putString(kKeyWxLatLon, latlon);
+}
+
+int ConfigStore::cachedWxCode() {
+    return StoragePreferences::getInt(kKeyWxCode, -1);
+}
+
+void ConfigStore::setCachedWxCode(int code) {
+    StoragePreferences::putInt(kKeyWxCode, code);
+}
+
+float ConfigStore::cachedPm25() {
+    return StoragePreferences::getFloat(kKeyWxPm25, -1.0f);
+}
+
+float ConfigStore::cachedPm10() {
+    return StoragePreferences::getFloat(kKeyWxPm10, -1.0f);
+}
+
+int ConfigStore::cachedAqi() {
+    return StoragePreferences::getInt(kKeyWxAqi, -1);
+}
+
+void ConfigStore::setCachedAir(float pm25, float pm10, int aqi) {
+    StoragePreferences::putFloat(kKeyWxPm25, pm25);
+    StoragePreferences::putFloat(kKeyWxPm10, pm10);
+    StoragePreferences::putInt(kKeyWxAqi, aqi);
+}
+
+long long ConfigStore::weatherUpdatedMs() {
+    // 没有 long long 存取接口 -> 用字符串存（数值极小，无精度问题）
+    const std::string s = StoragePreferences::getString(kKeyWxMs, "0");
+    return (long long)atoll(s.c_str());
+}
+
+void ConfigStore::setWeatherUpdatedMs(long long ms) {
+    char b[32];
+    snprintf(b, sizeof(b), "%lld", ms);
+    StoragePreferences::putString(kKeyWxMs, b);
+}
+
+bool ConfigStore::weatherHasData() {
+    return StoragePreferences::getInt(kKeyWxOk, 0) != 0;
+}
+
+void ConfigStore::setWeatherHasData(bool on) {
+    StoragePreferences::putInt(kKeyWxOk, on ? 1 : 0);
+}
+
+// ── 黄历缓存（2026-10-01）─────────────────────────────────────
+//   一条记录整存一个键：字段十几个（农历/干支/宜/忌/冲煞/值神/星宿/彭祖/胎神…），
+//   逐个开 prefs 键太碎，且这些字段**永远是整体更新**，没有单字段读写的需求。
+//   格式 "k=v\n"（值里的换行在写入前被替换成空格，见 encode()）。
+std::string ConfigStore::almanacBlob() {
+    return StoragePreferences::getString(kKeyAlmBlob, "");
+}
+
+void ConfigStore::setAlmanacBlob(const std::string& blob) {
+    StoragePreferences::putString(kKeyAlmBlob, blob);
+}
+
+long long ConfigStore::almanacFetchedMs() {
+    const std::string s = StoragePreferences::getString(kKeyAlmMs, "0");
+    return (long long)atoll(s.c_str());
+}
+
+void ConfigStore::setAlmanacFetchedMs(long long ms) {
+    char b[32];
+    snprintf(b, sizeof(b), "%lld", ms);
+    StoragePreferences::putString(kKeyAlmMs, b);
+}
+
+bool ConfigStore::almanacHasData() {
+    return StoragePreferences::getInt(kKeyAlmOk, 0) != 0;
+}
+
+void ConfigStore::setAlmanacHasData(bool on) {
+    StoragePreferences::putInt(kKeyAlmOk, on ? 1 : 0);
 }

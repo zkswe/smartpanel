@@ -293,7 +293,7 @@
     "caption": "ImageSsSetRowBg2",
     "position": {
       "left": 14,
-      "top": 132,
+      "top": 130,
       "width": 452,
       "height": 46
     },
@@ -329,7 +329,7 @@
     "caption": "TextSsSetRowLabel2",
     "position": {
       "left": 34,
-      "top": 144,
+      "top": 142,
       "width": 260,
       "height": 22
     },
@@ -364,7 +364,7 @@
     "caption": "ImageSsSetChip2",
     "position": {
       "left": 378,
-      "top": 133,
+      "top": 131,
       "width": 68,
       "height": 44
     },
@@ -400,7 +400,7 @@
     "caption": "ButtonSsSetRow2",
     "position": {
       "left": 14,
-      "top": 136,
+      "top": 134,
       "width": 452,
       "height": 38
     },
@@ -431,7 +431,7 @@
     "caption": "TextSsSetRowValue2",
     "position": {
       "left": 378,
-      "top": 133,
+      "top": 131,
       "width": 68,
       "height": 44
     },
@@ -466,7 +466,7 @@
     "caption": "ImageSsSetRowBg3",
     "position": {
       "left": 14,
-      "top": 184,
+      "top": 180,
       "width": 452,
       "height": 46
     },
@@ -502,7 +502,7 @@
     "caption": "TextSsSetRowLabel3",
     "position": {
       "left": 34,
-      "top": 196,
+      "top": 192,
       "width": 260,
       "height": 22
     },
@@ -537,7 +537,7 @@
     "caption": "ImageSsSetChip3",
     "position": {
       "left": 378,
-      "top": 185,
+      "top": 181,
       "width": 68,
       "height": 44
     },
@@ -573,7 +573,7 @@
     "caption": "ButtonSsSetRow3",
     "position": {
       "left": 14,
-      "top": 188,
+      "top": 184,
       "width": 452,
       "height": 38
     },
@@ -604,7 +604,7 @@
     "caption": "TextSsSetRowValue3",
     "position": {
       "left": 378,
-      "top": 185,
+      "top": 181,
       "width": 68,
       "height": 44
     },
@@ -639,7 +639,7 @@
     "caption": "ImageSsSetRowBg4",
     "position": {
       "left": 14,
-      "top": 236,
+      "top": 230,
       "width": 452,
       "height": 46
     },
@@ -675,7 +675,7 @@
     "caption": "TextSsSetRowLabel4",
     "position": {
       "left": 34,
-      "top": 248,
+      "top": 242,
       "width": 260,
       "height": 22
     },
@@ -710,7 +710,7 @@
     "caption": "ImageSsSetChip4",
     "position": {
       "left": 378,
-      "top": 237,
+      "top": 231,
       "width": 68,
       "height": 44
     },
@@ -746,7 +746,7 @@
     "caption": "ButtonSsSetRow4",
     "position": {
       "left": 14,
-      "top": 240,
+      "top": 234,
       "width": 452,
       "height": 38
     },
@@ -777,7 +777,7 @@
     "caption": "TextSsSetRowValue4",
     "position": {
       "left": 378,
-      "top": 237,
+      "top": 231,
       "width": 68,
       "height": 44
     },
@@ -812,7 +812,7 @@
     "caption": "ImageSsSetRowBg5",
     "position": {
       "left": 14,
-      "top": 288,
+      "top": 280,
       "width": 452,
       "height": 46
     },
@@ -848,7 +848,7 @@
     "caption": "TextSsSetRowLabel5",
     "position": {
       "left": 34,
-      "top": 300,
+      "top": 292,
       "width": 260,
       "height": 22
     },
@@ -883,7 +883,7 @@
     "caption": "ImageSsSetChip5",
     "position": {
       "left": 378,
-      "top": 289,
+      "top": 281,
       "width": 68,
       "height": 44
     },
@@ -919,7 +919,7 @@
     "caption": "ButtonSsSetRow5",
     "position": {
       "left": 14,
-      "top": 292,
+      "top": 284,
       "width": 452,
       "height": 38
     },
@@ -950,7 +950,7 @@
     "caption": "TextSsSetRowValue5",
     "position": {
       "left": 378,
-      "top": 289,
+      "top": 281,
       "width": 68,
       "height": 44
     },
@@ -985,7 +985,7 @@
     "caption": "TextSsSetHint1",
     "position": {
       "left": 20,
-      "top": 360,
+      "top": 382,
       "width": 440,
       "height": 22
     },
@@ -1002,41 +1002,6 @@
     "bold": false,
     "italic": false,
     "text": "点行切换显示/隐藏（立即生效并存 /data）",
-    "visible": true,
-    "rollEnable": false,
-    "rollDirection": 1,
-    "rollIntervalTime": 150,
-    "rollStep": 5,
-    "bgColorTab": {
-      "color0": -1,
-      "color1": -1,
-      "color2": -1,
-      "color3": -1,
-      "color4": -1
-    }
-  },
-  "textview__24": {
-    "id": 50024,
-    "caption": "TextSsSetHint2",
-    "position": {
-      "left": 20,
-      "top": 386,
-      "width": 440,
-      "height": 22
-    },
-    "alignment": 0,
-    "colorTab": {
-      "color0": 6250344,
-      "color1": -1,
-      "color2": -1,
-      "color3": -1,
-      "color4": -1
-    },
-    "fontSize": 16,
-    "touchable": false,
-    "bold": false,
-    "italic": false,
-    "text": "位置编辑：后续版本支持拖动调整",
     "visible": true,
     "rollEnable": false,
     "rollDirection": 1,
@@ -1105,6 +1070,179 @@
     },
     "fontSize": 20,
     "text": "编辑位置",
+    "touchable": true,
+    "visible": true,
+    "picTab": {},
+    "longClickTimeOut": -1,
+    "longClickIntervalTime": -1,
+    "bgColorTab": {
+      "color0": -1,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    }
+  },
+  "textview__26": {
+    "id": 50094,
+    "caption": "ImageSsSetRowBg6",
+    "position": {
+      "left": 14,
+      "top": 330,
+      "width": 452,
+      "height": 46
+    },
+    "alignment": 5,
+    "colorTab": {
+      "color0": 15527152,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    },
+    "fontSize": 16,
+    "touchable": false,
+    "bold": false,
+    "italic": false,
+    "text": "",
+    "visible": true,
+    "rollEnable": false,
+    "rollDirection": 1,
+    "rollIntervalTime": 150,
+    "rollStep": 5,
+    "bgColorTab": {
+      "color0": -1,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    },
+    "backgroundPic": "images/srow452x46.png"
+  },
+  "textview__27": {
+    "id": 50095,
+    "caption": "TextSsSetRowLabel6",
+    "position": {
+      "left": 34,
+      "top": 342,
+      "width": 260,
+      "height": 22
+    },
+    "alignment": 0,
+    "colorTab": {
+      "color0": 15527152,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    },
+    "fontSize": 18,
+    "touchable": false,
+    "bold": false,
+    "italic": false,
+    "text": "黄历",
+    "visible": true,
+    "rollEnable": false,
+    "rollDirection": 1,
+    "rollIntervalTime": 150,
+    "rollStep": 5,
+    "bgColorTab": {
+      "color0": -1,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    }
+  },
+  "textview__28": {
+    "id": 50096,
+    "caption": "ImageSsSetChip6",
+    "position": {
+      "left": 378,
+      "top": 331,
+      "width": 68,
+      "height": 44
+    },
+    "alignment": 5,
+    "colorTab": {
+      "color0": 15527152,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    },
+    "fontSize": 16,
+    "touchable": false,
+    "bold": false,
+    "italic": false,
+    "text": "",
+    "visible": true,
+    "rollEnable": false,
+    "rollDirection": 1,
+    "rollIntervalTime": 150,
+    "rollStep": 5,
+    "bgColorTab": {
+      "color0": -1,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    },
+    "backgroundPic": "images/chip68x44.png"
+  },
+  "textview__29": {
+    "id": 50097,
+    "caption": "TextSsSetRowValue6",
+    "position": {
+      "left": 378,
+      "top": 331,
+      "width": 68,
+      "height": 44
+    },
+    "alignment": 5,
+    "colorTab": {
+      "color0": 15527152,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    },
+    "fontSize": 18,
+    "touchable": false,
+    "bold": false,
+    "italic": false,
+    "text": "显示",
+    "visible": true,
+    "rollEnable": false,
+    "rollDirection": 1,
+    "rollIntervalTime": 150,
+    "rollStep": 5,
+    "bgColorTab": {
+      "color0": -1,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    }
+  },
+  "button__8": {
+    "id": 20040,
+    "caption": "ButtonSsSetRow6",
+    "position": {
+      "left": 14,
+      "top": 334,
+      "width": 452,
+      "height": 38
+    },
+    "alignment": 4,
+    "colorTab": {
+      "color0": 15527152,
+      "color1": 15527152,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    },
+    "text": "",
     "touchable": true,
     "visible": true,
     "picTab": {},

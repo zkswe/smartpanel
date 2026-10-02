@@ -115,3324 +115,640 @@
     },
     "fontSize": 18
   },
-  "scrollwindow__1": {
-    "id": 120001,
-    "caption": "ScrollSet",
+  "listview__1": {
+    "id": 60005,
+    "caption": "LvSet",
     "position": {
       "left": 0,
       "top": 62,
       "width": 480,
-      "height": 418
+      "height": 392
     },
-    "dragMaxDis": 60,
+    "autoRollback": false,
+    "backgroundColor": -1,
+    "cols": 1,
+    "colSpacing": 0,
+    "cycleEnable": false,
+    "dragMaxDis": 1,
+    "edgeEffect": 50,
+    "hasScrollbar": true,
     "orientation": 1,
-    "edgeEffect": 1,
+    "rows": 7,
+    "rowSpacing": 6,
     "touchable": true,
     "visible": true,
-    "window__1": {
-      "id": 110001,
-      "caption": "WindowSetList1",
+    "item": {
+      "caption": "",
+      "alignment": 0,
+      "backgroundColor": -1,
+      "bgColorTab": {
+        "color0": -1,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "bold": false,
+      "colorTab": {
+        "color0": 15527152,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "fontSize": 16,
+      "italic": false,
+      "longClickIntervalTime": -1,
+      "longClickTimeOut": -1,
+      "picTab": {},
       "position": {
         "left": 0,
         "top": 0,
         "width": 480,
-        "height": 832
+        "height": 50
       },
-      "backgroundColor": -1,
-      "hideTimeOut": -1,
-      "modal": false,
-      "touchable": false,
+      "text": "",
+      "touchable": true,
       "visible": true,
-      "textview__3": {
-        "id": 50003,
-        "caption": "TextGrpDevice",
-        "position": {
-          "left": 22,
-          "top": 8,
-          "width": 240,
-          "height": 22
+      "subItem": [
+        {
+          "id": 61001,
+          "caption": "ItemHeader",
+          "position": {
+            "left": 22,
+            "top": 14,
+            "width": 400,
+            "height": 24
+          },
+          "alignment": 0,
+          "colorTab": {
+            "color0": 10132130,
+            "color1": -1,
+            "color2": -1,
+            "color3": -1,
+            "color4": -1
+          },
+          "fontSize": 18,
+          "touchable": false,
+          "bold": false,
+          "italic": false,
+          "text": "",
+          "visible": true,
+          "rollEnable": false,
+          "rollDirection": 1,
+          "rollIntervalTime": 150,
+          "rollStep": 5,
+          "bgColorTab": {
+            "color0": -1,
+            "color1": -1,
+            "color2": -1,
+            "color3": -1,
+            "color4": -1
+          }
         },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
+        {
+          "id": 61002,
+          "caption": "ItemBg",
+          "position": {
+            "left": 14,
+            "top": 0,
+            "width": 452,
+            "height": 50
+          },
+          "alignment": 5,
+          "colorTab": {
+            "color0": 15527152,
+            "color1": -1,
+            "color2": -1,
+            "color3": -1,
+            "color4": -1
+          },
+          "fontSize": 16,
+          "touchable": false,
+          "bold": false,
+          "italic": false,
+          "text": "",
+          "visible": true,
+          "rollEnable": false,
+          "rollDirection": 1,
+          "rollIntervalTime": 150,
+          "rollStep": 5,
+          "bgColorTab": {
+            "color0": -1,
+            "color1": -1,
+            "color2": -1,
+            "color3": -1,
+            "color4": -1
+          },
+          "backgroundPic": "images/srow452x50.png"
         },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "设备",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
+        {
+          "id": 61003,
+          "caption": "ItemIconBg",
+          "position": {
+            "left": 28,
+            "top": 8,
+            "width": 34,
+            "height": 34
+          },
+          "alignment": 5,
+          "colorTab": {
+            "color0": 15527152,
+            "color1": -1,
+            "color2": -1,
+            "color3": -1,
+            "color4": -1
+          },
+          "fontSize": 16,
+          "touchable": false,
+          "bold": false,
+          "italic": false,
+          "text": "",
+          "visible": true,
+          "rollEnable": false,
+          "rollDirection": 1,
+          "rollIntervalTime": 150,
+          "rollStep": 5,
+          "bgColorTab": {
+            "color0": -1,
+            "color1": -1,
+            "color2": -1,
+            "color3": -1,
+            "color4": -1
+          },
+          "backgroundPic": "images/sicon34x34.png"
+        },
+        {
+          "id": 61004,
+          "caption": "ItemIcon",
+          "position": {
+            "left": 35,
+            "top": 15,
+            "width": 20,
+            "height": 20
+          },
+          "alignment": 5,
+          "colorTab": {
+            "color0": 15527152,
+            "color1": -1,
+            "color2": -1,
+            "color3": -1,
+            "color4": -1
+          },
+          "fontSize": 16,
+          "touchable": false,
+          "bold": false,
+          "italic": false,
+          "text": "",
+          "visible": true,
+          "rollEnable": false,
+          "rollDirection": 1,
+          "rollIntervalTime": 150,
+          "rollStep": 5,
+          "bgColorTab": {
+            "color0": -1,
+            "color1": -1,
+            "color2": -1,
+            "color3": -1,
+            "color4": -1
+          },
+          "backgroundPic": "images/ic_wifi_g20.png"
+        },
+        {
+          "id": 61005,
+          "caption": "ItemLabel",
+          "position": {
+            "left": 75,
+            "top": 6,
+            "width": 300,
+            "height": 22
+          },
+          "alignment": 0,
+          "colorTab": {
+            "color0": 15527152,
+            "color1": -1,
+            "color2": -1,
+            "color3": -1,
+            "color4": -1
+          },
+          "fontSize": 18,
+          "touchable": false,
+          "bold": false,
+          "italic": false,
+          "text": "",
+          "visible": true,
+          "rollEnable": false,
+          "rollDirection": 1,
+          "rollIntervalTime": 150,
+          "rollStep": 5,
+          "bgColorTab": {
+            "color0": -1,
+            "color1": -1,
+            "color2": -1,
+            "color3": -1,
+            "color4": -1
+          }
+        },
+        {
+          "id": 61006,
+          "caption": "ItemValue",
+          "position": {
+            "left": 75,
+            "top": 27,
+            "width": 340,
+            "height": 20
+          },
+          "alignment": 0,
+          "colorTab": {
+            "color0": 10132130,
+            "color1": -1,
+            "color2": -1,
+            "color3": -1,
+            "color4": -1
+          },
+          "fontSize": 16,
+          "touchable": false,
+          "bold": false,
+          "italic": false,
+          "text": "",
+          "visible": true,
+          "rollEnable": false,
+          "rollDirection": 1,
+          "rollIntervalTime": 150,
+          "rollStep": 5,
+          "bgColorTab": {
+            "color0": -1,
+            "color1": -1,
+            "color2": -1,
+            "color3": -1,
+            "color4": -1
+          }
+        },
+        {
+          "id": 61007,
+          "caption": "ItemChevron",
+          "position": {
+            "left": 424,
+            "top": 15,
+            "width": 26,
+            "height": 20
+          },
+          "alignment": 5,
+          "colorTab": {
+            "color0": 15527152,
+            "color1": -1,
+            "color2": -1,
+            "color3": -1,
+            "color4": -1
+          },
+          "fontSize": 16,
+          "touchable": false,
+          "bold": false,
+          "italic": false,
+          "text": "",
+          "visible": true,
+          "rollEnable": false,
+          "rollDirection": 1,
+          "rollIntervalTime": 150,
+          "rollStep": 5,
+          "bgColorTab": {
+            "color0": -1,
+            "color1": -1,
+            "color2": -1,
+            "color3": -1,
+            "color4": -1
+          },
+          "backgroundPic": "images/ic_chr_dim26.png"
         }
-      },
-      "textview__4": {
-        "id": 50004,
-        "caption": "ButtonRowWifiBg",
-        "position": {
-          "left": 14,
-          "top": 32,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/srow452x50.png"
-      },
-      "button__2": {
-        "id": 20002,
-        "caption": "ButtonRowWifi",
-        "position": {
-          "left": 14,
-          "top": 32,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 4,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": 15527152,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "text": "",
-        "touchable": true,
-        "visible": true,
-        "picTab": {},
-        "longClickTimeOut": -1,
-        "longClickIntervalTime": -1,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__5": {
-        "id": 50005,
-        "caption": "ButtonRowWifiIconBg",
-        "position": {
-          "left": 28,
-          "top": 40,
-          "width": 34,
-          "height": 34
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/sicon34x34.png"
-      },
-      "textview__6": {
-        "id": 50006,
-        "caption": "ButtonRowWifiIcon",
-        "position": {
-          "left": 35,
-          "top": 47,
-          "width": 20,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_wifi_g20.png"
-      },
-      "textview__7": {
-        "id": 50007,
-        "caption": "ButtonRowWifiLabel",
-        "position": {
-          "left": 75,
-          "top": 38,
-          "width": 300,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "WiFi",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__8": {
-        "id": 50008,
-        "caption": "ButtonRowWifiValue",
-        "position": {
-          "left": 75,
-          "top": 59,
-          "width": 300,
-          "height": 20
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "已连接 · --",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__9": {
-        "id": 50009,
-        "caption": "ButtonRowWifiChevron",
-        "position": {
-          "left": 424,
-          "top": 47,
-          "width": 26,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 6250344,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_chr_dim26.png"
-      },
-      "textview__10": {
-        "id": 50010,
-        "caption": "ButtonRowModeBg",
-        "position": {
-          "left": 14,
-          "top": 88,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/srow452x50.png"
-      },
-      "button__3": {
-        "id": 20003,
-        "caption": "ButtonRowMode",
-        "position": {
-          "left": 14,
-          "top": 88,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 4,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": 15527152,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "text": "",
-        "touchable": true,
-        "visible": true,
-        "picTab": {},
-        "longClickTimeOut": -1,
-        "longClickIntervalTime": -1,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__11": {
-        "id": 50011,
-        "caption": "ButtonRowModeIconBg",
-        "position": {
-          "left": 28,
-          "top": 96,
-          "width": 34,
-          "height": 34
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/sicon34x34.png"
-      },
-      "textview__12": {
-        "id": 50012,
-        "caption": "ButtonRowModeIcon",
-        "position": {
-          "left": 35,
-          "top": 103,
-          "width": 20,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_refresh_g20.png"
-      },
-      "textview__13": {
-        "id": 50013,
-        "caption": "ButtonRowModeLabel",
-        "position": {
-          "left": 75,
-          "top": 94,
-          "width": 300,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "运行模式",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__14": {
-        "id": 50014,
-        "caption": "ButtonRowModeValue",
-        "position": {
-          "left": 75,
-          "top": 115,
-          "width": 300,
-          "height": 20
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "HA模式 · HA: 已连接",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__15": {
-        "id": 50015,
-        "caption": "ButtonRowModeChevron",
-        "position": {
-          "left": 424,
-          "top": 103,
-          "width": 26,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 6250344,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_chr_dim26.png"
-      },
-      "textview__16": {
-        "id": 50016,
-        "caption": "ButtonRowNameBg",
-        "position": {
-          "left": 14,
-          "top": 144,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/srow452x50.png"
-      },
-      "button__4": {
-        "id": 20004,
-        "caption": "ButtonRowName",
-        "position": {
-          "left": 14,
-          "top": 144,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 4,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": 15527152,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "text": "",
-        "touchable": true,
-        "visible": true,
-        "picTab": {},
-        "longClickTimeOut": -1,
-        "longClickIntervalTime": -1,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__17": {
-        "id": 50017,
-        "caption": "ButtonRowNameIconBg",
-        "position": {
-          "left": 28,
-          "top": 152,
-          "width": 34,
-          "height": 34
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/sicon34x34.png"
-      },
-      "textview__18": {
-        "id": 50018,
-        "caption": "ButtonRowNameIcon",
-        "position": {
-          "left": 35,
-          "top": 159,
-          "width": 20,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_tag_g20.png"
-      },
-      "textview__19": {
-        "id": 50019,
-        "caption": "ButtonRowNameLabel",
-        "position": {
-          "left": 75,
-          "top": 150,
-          "width": 300,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "设备名称",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__20": {
-        "id": 50020,
-        "caption": "ButtonRowNameValue",
-        "position": {
-          "left": 75,
-          "top": 171,
-          "width": 300,
-          "height": 20
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "PANEL-B9D923B",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__21": {
-        "id": 50021,
-        "caption": "ButtonRowNameChevron",
-        "position": {
-          "left": 424,
-          "top": 159,
-          "width": 26,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 6250344,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_chr_dim26.png"
-      },
-      "textview__22": {
-        "id": 50022,
-        "caption": "ButtonRowScenesBg",
-        "position": {
-          "left": 14,
-          "top": 200,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/srow452x50.png"
-      },
-      "button__5": {
-        "id": 20005,
-        "caption": "ButtonRowScenes",
-        "position": {
-          "left": 14,
-          "top": 200,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 4,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": 15527152,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "text": "",
-        "touchable": true,
-        "visible": true,
-        "picTab": {},
-        "longClickTimeOut": -1,
-        "longClickIntervalTime": -1,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__23": {
-        "id": 50023,
-        "caption": "ButtonRowScenesIconBg",
-        "position": {
-          "left": 28,
-          "top": 208,
-          "width": 34,
-          "height": 34
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/sicon34x34.png"
-      },
-      "textview__24": {
-        "id": 50024,
-        "caption": "ButtonRowScenesIcon",
-        "position": {
-          "left": 35,
-          "top": 215,
-          "width": 20,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_sliders_g20.png"
-      },
-      "textview__25": {
-        "id": 50025,
-        "caption": "ButtonRowScenesLabel",
-        "position": {
-          "left": 75,
-          "top": 206,
-          "width": 300,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "情景模式",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__26": {
-        "id": 50026,
-        "caption": "ButtonRowScenesValue",
-        "position": {
-          "left": 75,
-          "top": 227,
-          "width": 300,
-          "height": 20
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "4 个情景 · 可增删",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__27": {
-        "id": 50027,
-        "caption": "ButtonRowScenesChevron",
-        "position": {
-          "left": 424,
-          "top": 215,
-          "width": 26,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 6250344,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_chr_dim26.png"
-      },
-      "textview__28": {
-        "id": 50028,
-        "caption": "ButtonRowBrightBg",
-        "position": {
-          "left": 14,
-          "top": 256,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/srow452x50.png"
-      },
-      "button__6": {
-        "id": 20006,
-        "caption": "ButtonRowBright",
-        "position": {
-          "left": 14,
-          "top": 256,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 4,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": 15527152,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "text": "",
-        "touchable": true,
-        "visible": true,
-        "picTab": {},
-        "longClickTimeOut": -1,
-        "longClickIntervalTime": -1,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__29": {
-        "id": 50029,
-        "caption": "ButtonRowBrightIconBg",
-        "position": {
-          "left": 28,
-          "top": 264,
-          "width": 34,
-          "height": 34
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/sicon34x34.png"
-      },
-      "textview__30": {
-        "id": 50030,
-        "caption": "ButtonRowBrightIcon",
-        "position": {
-          "left": 35,
-          "top": 271,
-          "width": 20,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_bright_g20.png"
-      },
-      "textview__31": {
-        "id": 50031,
-        "caption": "ButtonRowBrightLabel",
-        "position": {
-          "left": 75,
-          "top": 262,
-          "width": 300,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "屏幕亮度",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__32": {
-        "id": 50032,
-        "caption": "ButtonRowBrightValue",
-        "position": {
-          "left": 75,
-          "top": 283,
-          "width": 300,
-          "height": 20
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "工作 80% · 屏保 30%",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__33": {
-        "id": 50033,
-        "caption": "ButtonRowBrightChevron",
-        "position": {
-          "left": 424,
-          "top": 271,
-          "width": 26,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 6250344,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_chr_dim26.png"
-      },
-      "textview__34": {
-        "id": 50034,
-        "caption": "TextGrpSs",
-        "position": {
-          "left": 22,
-          "top": 316,
-          "width": 240,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "屏保",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__35": {
-        "id": 50035,
-        "caption": "ButtonRowOffBg",
-        "position": {
-          "left": 14,
-          "top": 340,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/srow452x50.png"
-      },
-      "button__7": {
-        "id": 20007,
-        "caption": "ButtonRowOff",
-        "position": {
-          "left": 14,
-          "top": 340,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 4,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": 15527152,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "text": "",
-        "touchable": true,
-        "visible": true,
-        "picTab": {},
-        "longClickTimeOut": -1,
-        "longClickIntervalTime": -1,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__36": {
-        "id": 50036,
-        "caption": "ButtonRowOffIconBg",
-        "position": {
-          "left": 28,
-          "top": 348,
-          "width": 34,
-          "height": 34
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/sicon34x34.png"
-      },
-      "textview__37": {
-        "id": 50037,
-        "caption": "ButtonRowOffIcon",
-        "position": {
-          "left": 35,
-          "top": 355,
-          "width": 20,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_moon_g20.png"
-      },
-      "textview__38": {
-        "id": 50038,
-        "caption": "ButtonRowOffLabel",
-        "position": {
-          "left": 75,
-          "top": 346,
-          "width": 300,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "关屏设置",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__39": {
-        "id": 50039,
-        "caption": "ButtonRowOffValue",
-        "position": {
-          "left": 75,
-          "top": 367,
-          "width": 300,
-          "height": 20
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "0:00-7:00 息屏 · 必选",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__40": {
-        "id": 50040,
-        "caption": "ButtonRowOffChevron",
-        "position": {
-          "left": 424,
-          "top": 355,
-          "width": 26,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 6250344,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_chr_dim26.png"
-      },
-      "textview__41": {
-        "id": 50041,
-        "caption": "ButtonRowSsSetBg",
-        "position": {
-          "left": 14,
-          "top": 452,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/srow452x50.png"
-      },
-      "button__8": {
-        "id": 20008,
-        "caption": "ButtonRowSsSet",
-        "position": {
-          "left": 14,
-          "top": 452,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 4,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": 15527152,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "text": "",
-        "touchable": true,
-        "visible": true,
-        "picTab": {},
-        "longClickTimeOut": -1,
-        "longClickIntervalTime": -1,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__42": {
-        "id": 50042,
-        "caption": "ButtonRowSsSetIconBg",
-        "position": {
-          "left": 28,
-          "top": 460,
-          "width": 34,
-          "height": 34
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/sicon34x34.png"
-      },
-      "textview__43": {
-        "id": 50043,
-        "caption": "ButtonRowSsSetIcon",
-        "position": {
-          "left": 35,
-          "top": 467,
-          "width": 20,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_screens_g20.png"
-      },
-      "textview__44": {
-        "id": 50044,
-        "caption": "ButtonRowSsSetLabel",
-        "position": {
-          "left": 75,
-          "top": 458,
-          "width": 300,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "屏保显示",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__45": {
-        "id": 50045,
-        "caption": "ButtonRowSsSetValue",
-        "position": {
-          "left": 75,
-          "top": 479,
-          "width": 300,
-          "height": 20
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "5 项开启 · 可增删",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__46": {
-        "id": 50046,
-        "caption": "ButtonRowSsSetChevron",
-        "position": {
-          "left": 424,
-          "top": 467,
-          "width": 26,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 6250344,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_chr_dim26.png"
-      },
-      "textview__47": {
-        "id": 50047,
-        "caption": "ButtonRowVideoBg",
-        "position": {
-          "left": 14,
-          "top": 508,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/srow452x50.png"
-      },
-      "button__9": {
-        "id": 20009,
-        "caption": "ButtonRowVideo",
-        "position": {
-          "left": 14,
-          "top": 508,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 4,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": 15527152,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "text": "",
-        "touchable": true,
-        "visible": true,
-        "picTab": {},
-        "longClickTimeOut": -1,
-        "longClickIntervalTime": -1,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__48": {
-        "id": 50048,
-        "caption": "ButtonRowVideoIconBg",
-        "position": {
-          "left": 28,
-          "top": 516,
-          "width": 34,
-          "height": 34
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/sicon34x34.png"
-      },
-      "textview__49": {
-        "id": 50049,
-        "caption": "ButtonRowVideoIcon",
-        "position": {
-          "left": 35,
-          "top": 523,
-          "width": 20,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_film_g20.png"
-      },
-      "textview__50": {
-        "id": 50050,
-        "caption": "ButtonRowVideoLabel",
-        "position": {
-          "left": 75,
-          "top": 514,
-          "width": 300,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "屏保视频",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__51": {
-        "id": 50051,
-        "caption": "ButtonRowVideoValue",
-        "position": {
-          "left": 75,
-          "top": 535,
-          "width": 300,
-          "height": 20
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "连续轮播",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__52": {
-        "id": 50052,
-        "caption": "ButtonRowVideoChevron",
-        "position": {
-          "left": 424,
-          "top": 523,
-          "width": 26,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 6250344,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_chr_dim26.png"
-      },
-      "textview__53": {
-        "id": 50053,
-        "caption": "ButtonRowAlbumBg",
-        "position": {
-          "left": 14,
-          "top": 564,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/srow452x50.png"
-      },
-      "button__10": {
-        "id": 20010,
-        "caption": "ButtonRowAlbum",
-        "position": {
-          "left": 14,
-          "top": 564,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 4,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": 15527152,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "text": "",
-        "touchable": true,
-        "visible": true,
-        "picTab": {},
-        "longClickTimeOut": -1,
-        "longClickIntervalTime": -1,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__54": {
-        "id": 50054,
-        "caption": "ButtonRowAlbumIconBg",
-        "position": {
-          "left": 28,
-          "top": 572,
-          "width": 34,
-          "height": 34
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/sicon34x34.png"
-      },
-      "textview__55": {
-        "id": 50055,
-        "caption": "ButtonRowAlbumIcon",
-        "position": {
-          "left": 35,
-          "top": 579,
-          "width": 20,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_image_g20.png"
-      },
-      "textview__56": {
-        "id": 50056,
-        "caption": "ButtonRowAlbumLabel",
-        "position": {
-          "left": 75,
-          "top": 570,
-          "width": 300,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "相册上传",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__57": {
-        "id": 50057,
-        "caption": "ButtonRowAlbumValue",
-        "position": {
-          "left": 75,
-          "top": 591,
-          "width": 300,
-          "height": 20
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "点按进入相册模式",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__58": {
-        "id": 50058,
-        "caption": "ButtonRowAlbumChevron",
-        "position": {
-          "left": 424,
-          "top": 579,
-          "width": 26,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 6250344,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_chr_dim26.png"
-      },
-      "textview__59": {
-        "id": 50059,
-        "caption": "TextGrpSys",
-        "position": {
-          "left": 22,
-          "top": 624,
-          "width": 240,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "系统",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__60": {
-        "id": 50060,
-        "caption": "ButtonRowVerBg",
-        "position": {
-          "left": 14,
-          "top": 704,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/srow452x50.png"
-      },
-      "button__11": {
-        "id": 20011,
-        "caption": "ButtonRowVer",
-        "position": {
-          "left": 14,
-          "top": 704,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 4,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": 15527152,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "text": "",
-        "touchable": true,
-        "visible": true,
-        "picTab": {},
-        "longClickTimeOut": -1,
-        "longClickIntervalTime": -1,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__61": {
-        "id": 50061,
-        "caption": "ButtonRowVerIconBg",
-        "position": {
-          "left": 28,
-          "top": 712,
-          "width": 34,
-          "height": 34
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/sicon34x34.png"
-      },
-      "textview__62": {
-        "id": 50062,
-        "caption": "ButtonRowVerIcon",
-        "position": {
-          "left": 35,
-          "top": 719,
-          "width": 20,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_info_g20.png"
-      },
-      "textview__63": {
-        "id": 50063,
-        "caption": "ButtonRowVerLabel",
-        "position": {
-          "left": 75,
-          "top": 710,
-          "width": 300,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "版本信息",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__64": {
-        "id": 50064,
-        "caption": "ButtonRowVerValue",
-        "position": {
-          "left": 75,
-          "top": 731,
-          "width": 300,
-          "height": 20
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "SmartPanel v1.0 · Z20",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__65": {
-        "id": 50065,
-        "caption": "ButtonRowVerChevron",
-        "position": {
-          "left": 424,
-          "top": 719,
-          "width": 26,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 6250344,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_chr_dim26.png"
-      },
-      "textview__66": {
-        "id": 50531,
-        "caption": "ImageRowWallBg",
-        "position": {
-          "left": 14,
-          "top": 768,
-          "width": 452,
-          "height": 46
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/srow452x46.png"
-      },
-      "button__12": {
-        "id": 20151,
-        "caption": "ButtonRowWall",
-        "position": {
-          "left": 14,
-          "top": 768,
-          "width": 452,
-          "height": 46
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": 15527152,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "text": "",
-        "touchable": true,
-        "visible": true,
-        "picTab": {},
-        "longClickTimeOut": -1,
-        "longClickIntervalTime": -1,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__76": {
-        "id": 50541,
-        "caption": "ImageRowWallIconBg",
-        "position": {
-          "left": 28,
-          "top": 774,
-          "width": 34,
-          "height": 34
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/sicon34x34.png"
-      },
-      "textview__77": {
-        "id": 50542,
-        "caption": "ImageRowWallIcon",
-        "position": {
-          "left": 35,
-          "top": 781,
-          "width": 20,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_screens_g20.png"
-      },
-      "textview__67": {
-        "id": 50532,
-        "caption": "TextRowWallLabel",
-        "position": {
-          "left": 75,
-          "top": 780,
-          "width": 300,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "多屏拼接",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__68": {
-        "id": 50533,
-        "caption": "TextRowWallValue",
-        "position": {
-          "left": 300,
-          "top": 780,
-          "width": 118,
-          "height": 22
-        },
-        "alignment": 6,
-        "colorTab": {
-          "color0": 10133670,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "已关闭",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__69": {
-        "id": 50534,
-        "caption": "TextRowWallChevron",
-        "position": {
-          "left": 424,
-          "top": 781,
-          "width": 26,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 6250344,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_chr_dim26.png"
-      },
-      "textview__70": {
-        "id": 50535,
-        "caption": "ButtonRowFlipBg",
-        "position": {
-          "left": 14,
-          "top": 648,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/srow452x50.png"
-      },
-      "button__25": {
-        "id": 20152,
-        "caption": "ButtonRowFlip",
-        "position": {
-          "left": 14,
-          "top": 648,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 4,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": 15527152,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "text": "",
-        "touchable": true,
-        "visible": true,
-        "picTab": {},
-        "longClickTimeOut": -1,
-        "longClickIntervalTime": -1,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__71": {
-        "id": 50536,
-        "caption": "ButtonRowFlipIconBg",
-        "position": {
-          "left": 28,
-          "top": 656,
-          "width": 34,
-          "height": 34
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/sicon34x34.png"
-      },
-      "textview__72": {
-        "id": 50537,
-        "caption": "ButtonRowFlipIcon",
-        "position": {
-          "left": 35,
-          "top": 663,
-          "width": 20,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_refresh_g20.png"
-      },
-      "textview__73": {
-        "id": 50538,
-        "caption": "ButtonRowFlipLabel",
-        "position": {
-          "left": 75,
-          "top": 654,
-          "width": 300,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "设备倒装",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__74": {
-        "id": 50539,
-        "caption": "ButtonRowFlipValue",
-        "position": {
-          "left": 75,
-          "top": 675,
-          "width": 300,
-          "height": 20
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "关闭",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__75": {
-        "id": 50540,
-        "caption": "ButtonRowFlipChevron",
-        "position": {
-          "left": 424,
-          "top": 663,
-          "width": 26,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 6250344,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_chr_dim26.png"
-      },
-      "textview__78": {
-        "id": 50541,
-        "caption": "ButtonRowKeySetBg",
-        "position": {
-          "left": 14,
-          "top": 396,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/srow452x50.png"
-      },
-      "button__26": {
-        "id": 20160,
-        "caption": "ButtonRowKeySet",
-        "position": {
-          "left": 14,
-          "top": 396,
-          "width": 452,
-          "height": 50
-        },
-        "alignment": 4,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": 15527152,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "text": "",
-        "touchable": true,
-        "visible": true,
-        "picTab": {},
-        "longClickTimeOut": -1,
-        "longClickIntervalTime": -1,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__79": {
-        "id": 50542,
-        "caption": "ButtonRowKeySetIconBg",
-        "position": {
-          "left": 28,
-          "top": 404,
-          "width": 34,
-          "height": 34
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/sicon34x34.png"
-      },
-      "textview__80": {
-        "id": 50543,
-        "caption": "ButtonRowKeySetIcon",
-        "position": {
-          "left": 35,
-          "top": 411,
-          "width": 20,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 8118435,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_sliders_g20.png"
-      },
-      "textview__81": {
-        "id": 50544,
-        "caption": "ButtonRowKeySetLabel",
-        "position": {
-          "left": 75,
-          "top": 402,
-          "width": 300,
-          "height": 22
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 15527152,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 18,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "按键配置",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__82": {
-        "id": 50545,
-        "caption": "ButtonRowKeySetValue",
-        "position": {
-          "left": 75,
-          "top": 423,
-          "width": 300,
-          "height": 20
-        },
-        "alignment": 0,
-        "colorTab": {
-          "color0": 10132130,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "3 个显示 - 可增删",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        }
-      },
-      "textview__83": {
-        "id": 50546,
-        "caption": "ButtonRowKeySetChevron",
-        "position": {
-          "left": 424,
-          "top": 411,
-          "width": 26,
-          "height": 20
-        },
-        "alignment": 5,
-        "colorTab": {
-          "color0": 6250344,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "fontSize": 16,
-        "touchable": false,
-        "bold": false,
-        "italic": false,
-        "text": "",
-        "visible": true,
-        "rollEnable": false,
-        "rollDirection": 1,
-        "rollIntervalTime": 150,
-        "rollStep": 5,
-        "bgColorTab": {
-          "color0": -1,
-          "color1": -1,
-          "color2": -1,
-          "color3": -1,
-          "color4": -1
-        },
-        "backgroundPic": "images/ic_chr_dim26.png"
+      ]
+    }
+  },
+  "window__2": {
+    "id": 110005,
+    "caption": "WindowTuya",
+    "position": {
+      "left": 0,
+      "top": 0,
+      "width": 480,
+      "height": 480
+    },
+    "backgroundColor": -1,
+    "hideTimeOut": -1,
+    "modal": true,
+    "touchable": false,
+    "visible": false,
+    "textview__3": {
+      "id": 50131,
+      "caption": "ImageTuyaDim",
+      "position": {
+        "left": 0,
+        "top": 0,
+        "width": 480,
+        "height": 480
+      },
+      "alignment": 5,
+      "colorTab": {
+        "color0": 15527152,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "fontSize": 16,
+      "touchable": false,
+      "bold": false,
+      "italic": false,
+      "text": "",
+      "visible": true,
+      "rollEnable": false,
+      "rollDirection": 1,
+      "rollIntervalTime": 150,
+      "rollStep": 5,
+      "bgColorTab": {
+        "color0": -1,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "backgroundPic": "images/dim.png"
+    },
+    "textview__4": {
+      "id": 50132,
+      "caption": "ImageTuyaBox",
+      "position": {
+        "left": 56,
+        "top": 140,
+        "width": 368,
+        "height": 200
+      },
+      "alignment": 5,
+      "colorTab": {
+        "color0": 15527152,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "fontSize": 16,
+      "touchable": false,
+      "bold": false,
+      "italic": false,
+      "text": "",
+      "visible": true,
+      "rollEnable": false,
+      "rollDirection": 1,
+      "rollIntervalTime": 150,
+      "rollStep": 5,
+      "bgColorTab": {
+        "color0": -1,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "backgroundPic": "images/mbox368.png"
+    },
+    "textview__5": {
+      "id": 50133,
+      "caption": "TextTuyaTitle",
+      "position": {
+        "left": 76,
+        "top": 158,
+        "width": 328,
+        "height": 30
+      },
+      "alignment": 0,
+      "colorTab": {
+        "color0": 15527152,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "fontSize": 22,
+      "touchable": false,
+      "bold": true,
+      "italic": false,
+      "text": "切换到涂鸦模式",
+      "visible": true,
+      "rollEnable": false,
+      "rollDirection": 1,
+      "rollIntervalTime": 150,
+      "rollStep": 5,
+      "bgColorTab": {
+        "color0": -1,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
       }
+    },
+    "textview__6": {
+      "id": 50134,
+      "caption": "TextTuyaSub",
+      "position": {
+        "left": 76,
+        "top": 194,
+        "width": 328,
+        "height": 24
+      },
+      "alignment": 0,
+      "colorTab": {
+        "color0": 10132130,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "fontSize": 18,
+      "touchable": false,
+      "bold": false,
+      "italic": false,
+      "text": "将重启面板并进入 SD 卡上的涂鸦程序",
+      "visible": true,
+      "rollEnable": false,
+      "rollDirection": 1,
+      "rollIntervalTime": 150,
+      "rollStep": 5,
+      "bgColorTab": {
+        "color0": -1,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      }
+    },
+    "textview__7": {
+      "id": 50135,
+      "caption": "TextTuyaHint",
+      "position": {
+        "left": 76,
+        "top": 224,
+        "width": 328,
+        "height": 24
+      },
+      "alignment": 0,
+      "colorTab": {
+        "color0": 15527152,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "fontSize": 18,
+      "touchable": false,
+      "bold": false,
+      "italic": false,
+      "text": "重启设备即可回到本机模式",
+      "visible": true,
+      "rollEnable": false,
+      "rollDirection": 1,
+      "rollIntervalTime": 150,
+      "rollStep": 5,
+      "bgColorTab": {
+        "color0": -1,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      }
+    },
+    "textview__8": {
+      "id": 50136,
+      "caption": "ImageTuyaOkBg",
+      "position": {
+        "left": 76,
+        "top": 272,
+        "width": 152,
+        "height": 44
+      },
+      "alignment": 5,
+      "colorTab": {
+        "color0": 15527152,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "fontSize": 16,
+      "touchable": false,
+      "bold": false,
+      "italic": false,
+      "text": "",
+      "visible": true,
+      "rollEnable": false,
+      "rollDirection": 1,
+      "rollIntervalTime": 150,
+      "rollStep": 5,
+      "bgColorTab": {
+        "color0": -1,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "backgroundPic": "images/btn_primary152x44.png"
+    },
+    "button__2": {
+      "id": 20037,
+      "caption": "ButtonTuyaOk",
+      "position": {
+        "left": 76,
+        "top": 272,
+        "width": 152,
+        "height": 44
+      },
+      "alignment": 5,
+      "colorTab": {
+        "color0": 1053722,
+        "color1": 1053722,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "text": "切换",
+      "touchable": true,
+      "visible": true,
+      "picTab": {},
+      "longClickTimeOut": -1,
+      "longClickIntervalTime": -1,
+      "bgColorTab": {
+        "color0": -1,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "fontSize": 20
+    },
+    "textview__9": {
+      "id": 50137,
+      "caption": "ImageTuyaCancelBg",
+      "position": {
+        "left": 252,
+        "top": 272,
+        "width": 152,
+        "height": 44
+      },
+      "alignment": 5,
+      "colorTab": {
+        "color0": 15527152,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "fontSize": 16,
+      "touchable": false,
+      "bold": false,
+      "italic": false,
+      "text": "",
+      "visible": true,
+      "rollEnable": false,
+      "rollDirection": 1,
+      "rollIntervalTime": 150,
+      "rollStep": 5,
+      "bgColorTab": {
+        "color0": -1,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "backgroundPic": "images/msw152x44.png"
+    },
+    "button__3": {
+      "id": 20038,
+      "caption": "ButtonTuyaCancel",
+      "position": {
+        "left": 252,
+        "top": 272,
+        "width": 152,
+        "height": 44
+      },
+      "alignment": 5,
+      "colorTab": {
+        "color0": 15527152,
+        "color1": 15527152,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "text": "取消",
+      "touchable": true,
+      "visible": true,
+      "picTab": {},
+      "longClickTimeOut": -1,
+      "longClickIntervalTime": -1,
+      "bgColorTab": {
+        "color0": -1,
+        "color1": -1,
+        "color2": -1,
+        "color3": -1,
+        "color4": -1
+      },
+      "fontSize": 20
     }
   }
 }

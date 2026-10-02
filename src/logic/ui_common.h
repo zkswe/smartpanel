@@ -112,7 +112,10 @@ inline void startWatchdogFeeder() {
     WatchdogFeederThread::startOnce();
 }
 
-// ── 天气图标（晴/云/雨/雪），suffix 区分屏保 96px 与首页 34px 资源 ──
+// ── 天气图标（晴/多云/阴/雾/雨/雪），suffix 区分屏保 22px 与其它尺寸资源 ──
+//   素材由 tools/gen_weather_icons.js 生成（M3 主绿 #7BE0A3，22×22，透明底）。
+//   历史坑：改之前工程里**根本没有** w_sun/w_cloud/w_rain/w_snow 这些文件（只有 ic_sun_g22.png），
+//   所以 setBackgroundPic 一直加载失败 —— 已补齐。
 inline void applyWeatherIcon(ZKTextView* icon, const std::string& w, const char* suffix) {
     if (icon == NULL) return;
     std::string base = "images/w_sun";
@@ -121,6 +124,8 @@ inline void applyWeatherIcon(ZKTextView* icon, const std::string& w, const char*
         base = "images/w_rain";
     } else if (w.find("雪") != std::string::npos) {
         base = "images/w_snow";
+    } else if (w.find("雾") != std::string::npos || w.find("霾") != std::string::npos) {
+        base = "images/w_fog";
     } else if (w.find("云") != std::string::npos || w.find("阴") != std::string::npos
                || w.find("cloud") != std::string::npos) {
         base = "images/w_cloud";

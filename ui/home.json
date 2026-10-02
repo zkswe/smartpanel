@@ -104,7 +104,7 @@
     "touchable": false,
     "bold": true,
     "italic": false,
-    "text": "26.5°C",
+    "text": "读取中",
     "visible": true,
     "rollEnable": false,
     "rollDirection": 1,
@@ -139,7 +139,42 @@
     "touchable": false,
     "bold": false,
     "italic": false,
-    "text": "晴 26°C",
+    "text": "获取中",
+    "visible": true,
+    "rollEnable": false,
+    "rollDirection": 1,
+    "rollIntervalTime": 150,
+    "rollStep": 5,
+    "bgColorTab": {
+      "color0": -1,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    }
+  },
+  "textview__30": {
+    "id": 50052,
+    "caption": "TextWxAir",
+    "position": {
+      "left": 276,
+      "top": 88,
+      "width": 140,
+      "height": 22
+    },
+    "alignment": 6,
+    "colorTab": {
+      "color0": 10915593,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    },
+    "fontSize": 16,
+    "touchable": false,
+    "bold": false,
+    "italic": false,
+    "text": "PM2.5 获取中",
     "visible": true,
     "rollEnable": false,
     "rollDirection": 1,

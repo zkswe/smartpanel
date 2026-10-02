@@ -14,9 +14,19 @@
  *   开关:   {"cmd":"set","relay":1,"on":true}
  *   情景:   {"cmd":"scene","name":"away"} -> 本机执行并广播联动
  *   定义情景: {"cmd":"define_scene","name":"movie","relays":[0,0,1],"desc":"..."}
- *   天气推送: {"cmd":"weather","text":"晴 26C"}        （小程序/网关推送）
+ *   天气推送: {"cmd":"weather","text":"晴 26C"}        （小程序/网关推送；会关闭自动拉取的文案覆盖）
+ *   配置位置: {"cmd":"config_weather","city":"杭州"}    （走 geocoding 解析经纬度，改完立即重拉）
+ *             或 {"cmd":"config_weather","lat":22.5431,"lon":114.0579,"city":"深圳"}
  *   传感器: {"cmd":"sensor","temp":26.5,"hum":55}
  *   改名:   {"cmd":"rename","relay":2,"name":"走廊灯"}
+ *   屏保坏素材: {"cmd":"ssbad_list"}      -> {"ok":true,"count":N,"marked":[...],"records":[...]}
+ *               {"cmd":"ssbad_clear"}     -> 取消全部素材标记（改名还原）并重扫
+ *               records 每条形如 "<路径>|<原因>|<墙钟秒>"（秒为 0 = 设备尚未校时）
+ *
+ * status 里的环境字段（2026-10-01 起为真实数据，来源 Open-Meteo）：
+ *   temp / hum / weather / wx_code / pm25 / pm10 / aqi / aqi_level / city /
+ *   has_data（是否已成功拉到过）/ updated_ms（上次成功时刻）
+ *   ss_bad（屏保素材里被标记为"不可播"的数量，>0 说明有素材被自动改名成 *.bad）
  *
  * 主动广播（255.255.255.255:5050）：
  *   状态变化: {"event":"status","id":"PANEL-XXXX","relays":[1,0,1],"scene":"home"}

@@ -23,6 +23,24 @@
  *     重挑 clip 再 play()。
  * · 旋转：包按 `SIMPLE_PLAYER_CLOCKWISE_ROTATION` 环境变量取顺时针角度（不设则用
  *   ConfigManager 的 screenRotate 反推）。本工程沿用 prefs `sp_wall_rotate`（默认 0 = 不旋转）。
+ *
+ * ★★ 2026-10-01 关键修正：**同步模式（setSynchronizing）必须区分"拼墙"与"屏保"**
+ *   包的 sync = "对基准钟播放"（反汇编 libsimple-player.a::doTask 得到）：
+ *       phase  = standardTime() % (duration + parseTime) - parseTime
+ *       target = standardTime() - phase
+ *       每包等 standardTime() >= accum_pts + target 才 stream()；最后一个包之后再等到
+ *       standardTime() >= duration + target 才从 play() 返回
+ *     ⇒ play() 返回时长 = duration + parseTime - (standardTime_start mod T)，
+ *       即"播到**绝对钟**的下一个整点"（T = duration + parseTime），
+ *       standardTime() 取 gettimeofday 墙钟（SIMPLE_PLAYER_LOG=1 时改用 uptime）。
+ *    拼墙（2~4 台同刻出画）需要它；**屏保单机循环不需要**，开了反而出三个病：
+ *      ① 起播时把 phase 对应的**前若干秒画面一次性灌进解码器**（到期时刻已过去）→ 跳帧/卡帧；
+ *      ② phase 大时灌流把 MI DISP 喂不上（实测起播后 5~11s `mi_disp0 RecvBufCnt` 仍为 0，
+ *         `mi_vdec0` 一度整个 proc 消失 = VDEC 通道被销毁重建）→ 黑屏很久；
+ *      ③ 声音走独立播放器（ss_audio 播同名 mp3）不受该相位影响、从 0 正常播 → 声音先出。
+ *    现场证据（2026-10-01）：同一素材 play() 时长在 0.2s~11.0s 之间随机漂移，且"短播"会
+ *    换素材（换前 森林溪瀑 0.91s → 换后 海滩浪花 1.03s）= 时间相位效应，与编码无关。
+ *    ⇒ 口径：**拼墙（WallLink enabled）开；屏保关**。prefs `sp_ss_sync` 可覆盖（-1=自动 0=关 1=开）。
  */
 #include "wall/WallPlayer.h"
 
@@ -41,6 +59,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 #undef LOG_TAG
@@ -68,6 +87,31 @@ struct WallPlayer::Impl {
 WallPlayer* WallPlayer::getInstance() {
     static WallPlayer s;
     return &s;
+}
+
+// ── 音画同步握手（见 WallPlayer.h）────────────────────────────────────
+//   ⚠️ 必须用 **4 字节**原子：32 位 ARM 上 `std::atomic<long long>` 会引 `__atomic_load_8`
+//      等 libatomic 符号，本工程没链 libatomic -> `undefined reference to __atomic_store_8`。
+//      开机毫秒数 49 天才回绕一次，存 32 位足够（回绕成 0 的概率可忽略）。
+static std::atomic<unsigned int> sFirstFeedMs{0};
+
+long long WallPlayer::monoMs() {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (long long)ts.tv_sec * 1000 + (long long)(ts.tv_nsec / 1000000);
+}
+
+void WallPlayer::resetFirstFeed() {
+    sFirstFeedMs.store(0);
+}
+
+void WallPlayer::noteFirstFeed() {
+    unsigned int expect = 0;
+    sFirstFeedMs.compare_exchange_strong(expect, (unsigned int)monoMs());   // 只记第一次
+}
+
+long long WallPlayer::firstFeedMs() {
+    return (long long)sFirstFeedMs.load();
 }
 
 WallPlayer::WallPlayer() {
@@ -148,6 +192,8 @@ std::string WallPlayer::lastError() {
     return impl_->err;
 }
 
+static bool wantSynchronizing();      // 定义在下方 run() 之前（同步模式口径，见文件头）
+
 bool WallPlayer::start(const std::string& file, int x, int y, int w, int h) {
     Impl* im = impl_;
     if (file.empty()) return false;
@@ -177,9 +223,11 @@ bool WallPlayer::start(const std::string& file, int x, int y, int w, int h) {
     im->x = x; im->y = y; im->w = w; im->h = h;
     im->cycles = 0;
     im->stopReq = false;
+    resetFirstFeed();                       // 音画同步：本次起播的"第一包"时刻重新计
     im->alive = true;
     im->th = std::thread(&WallPlayer::run, this, file, x, y, w, h);
-    LOGI("wall[sp-pkg]: start %s rect=(%d,%d,%d,%d) engine=simple-player(pkg) sync=1", file.c_str(), x, y, w, h);
+    LOGI("wall[sp-pkg]: start %s rect=(%d,%d,%d,%d) engine=simple-player(pkg) sync=%d",
+         file.c_str(), x, y, w, h, wantSynchronizing() ? 1 : 0);
     return true;
 }
 
@@ -201,10 +249,24 @@ void WallPlayer::stop() {
     LOGI("wall[sp-pkg]: stopped (cycles=%d)", im->cycles.load());
 }
 
+// 同步模式口径（见文件头"★★ 关键修正"）：
+//   拼墙 = 需要"绝对钟网格"对齐（多台同刻出画）-> 开；
+//   屏保 = 单机循环，不需要 -> 关（开了会被相位劫持：跳帧 + 黑屏 + 声音先出）。
+//   prefs `sp_ss_sync`：-1 = 自动（默认，按 WallLink）  0 = 强制关  1 = 强制开。
+static bool wantSynchronizing() {
+    const int ov = StoragePreferences::getInt("sp_ss_sync", -1);
+    if (ov == 0) return false;
+    if (ov == 1) return true;
+    return WallLink::getInstance()->enabled();     // 自动：只有拼接场景才对齐基准钟
+}
+
 void WallPlayer::run(std::string file, int x, int y, int w, int h) {
     Impl* im = impl_;
     SimplePlayer sp;                           // 一次创建，多轮复用（包内部按尺寸复用 MI 通道）
-    sp.setSynchronizing(true);                 // ← 包自带对齐（现场验证过的那套）
+    const bool syncOn = wantSynchronizing();
+    sp.setSynchronizing(syncOn);
+    LOGI("wall[sp-pkg]: sync=%d (%s)", syncOn ? 1 : 0,
+         syncOn ? "拼墙：对齐绝对钟网格" : "屏保：按 PTS 正常起播（不被相位劫持）");
     {
         std::lock_guard<std::mutex> lk(im->spMu);
         im->sp = &sp;
@@ -263,6 +325,12 @@ void WallPlayer::run(std::string file, int x, int y, int w, int h) {
              im->cycles.load() + 1, im->clipIdx.load(), im->clipCnt.load());
         try {
             sp.play(f, rect);                  // 阻塞：读到 EOF 或 stop()
+            // 本片正常播完 -> 清掉上一轮遗留的错误。不清的话 lastError() 会一直非空，
+            // 上层"按错误标记坏素材"的逻辑就会把后面能播的片子也一起判掉（2026-10-01 修）。
+            {
+                std::lock_guard<std::mutex> lk(im->mu);
+                im->err.clear();
+            }
         } catch (std::exception& e) {
             {
                 std::lock_guard<std::mutex> lk(im->mu);
@@ -279,6 +347,10 @@ void WallPlayer::run(std::string file, int x, int y, int w, int h) {
             usleep(1000 * 1000);
         }
         im->playing = false;
+        // 音画同步（2026-10-01）：**先清 firstFeed 再自增 cycles** —— 上层一旦观察到 cycles 变化，
+        // 必定读到 firstFeedMs()==0（= 新一轮还没开始喂流），于是挂起音频等这一轮的第一包；
+        // 反过来先自增会让上层读到上一轮的旧值 -> 音频提前起播（错位 ~200ms）。
+        resetFirstFeed();
         im->cycles.fetch_add(1);
     }
     {

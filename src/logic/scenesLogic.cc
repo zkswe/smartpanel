@@ -22,6 +22,7 @@ INIT_UI_EVENT_BINDINGS
 #include "entry/EasyUIContext.h"
 #include "control/ZKButton.h"
 #include "control/ZKTextView.h"
+#include "control/ZKListView.h"
 #include "control/ZKEditText.h"
 #include "window/ZKWindow.h"
 #include "storage/ConfigStore.h"
@@ -45,38 +46,11 @@ static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
 #define SCENE_NAME_UNITS_MAX 6      // 新增情景名最多 6 个汉字（1 个 ASCII 记 0.55）
 
 static std::string sDelName;        // 待删除的情景名（名称快照，删除后列表会前移）
+static bool sHaList = false;         // 当前列表是否 HA 只读模式
+static int  sListCount = 0;          // 当前列表行数（listview 数据源）
 
-static ZKTextView* rowBg(int i) {
-    ZKTextView* a[SCENE_ROW_MAX] = {
-        mImageSceneRowBg1Ptr, mImageSceneRowBg2Ptr, mImageSceneRowBg3Ptr, mImageSceneRowBg4Ptr,
-        mImageSceneRowBg5Ptr, mImageSceneRowBg6Ptr, mImageSceneRowBg7Ptr, mImageSceneRowBg8Ptr };
-    return (i >= 0 && i < SCENE_ROW_MAX) ? a[i] : NULL;
-}
-static ZKTextView* rowName(int i) {
-    ZKTextView* a[SCENE_ROW_MAX] = {
-        mTextSceneRowName1Ptr, mTextSceneRowName2Ptr, mTextSceneRowName3Ptr, mTextSceneRowName4Ptr,
-        mTextSceneRowName5Ptr, mTextSceneRowName6Ptr, mTextSceneRowName7Ptr, mTextSceneRowName8Ptr };
-    return (i >= 0 && i < SCENE_ROW_MAX) ? a[i] : NULL;
-}
-static ZKTextView* rowDesc(int i) {
-    ZKTextView* a[SCENE_ROW_MAX] = {
-        mTextSceneRowDesc1Ptr, mTextSceneRowDesc2Ptr, mTextSceneRowDesc3Ptr, mTextSceneRowDesc4Ptr,
-        mTextSceneRowDesc5Ptr, mTextSceneRowDesc6Ptr, mTextSceneRowDesc7Ptr, mTextSceneRowDesc8Ptr };
-    return (i >= 0 && i < SCENE_ROW_MAX) ? a[i] : NULL;
-}
-static ZKButton* rowDel(int i) {
-    ZKButton* a[SCENE_ROW_MAX] = {
-        mButtonSceneDel1Ptr, mButtonSceneDel2Ptr, mButtonSceneDel3Ptr, mButtonSceneDel4Ptr,
-        mButtonSceneDel5Ptr, mButtonSceneDel6Ptr, mButtonSceneDel7Ptr, mButtonSceneDel8Ptr };
-    return (i >= 0 && i < SCENE_ROW_MAX) ? a[i] : NULL;
-}
-static ZKTextView* rowDelIcon(int i) {
-    ZKTextView* a[SCENE_ROW_MAX] = {
-        mImageSceneDelIcon1Ptr, mImageSceneDelIcon2Ptr, mImageSceneDelIcon3Ptr,
-        mImageSceneDelIcon4Ptr, mImageSceneDelIcon5Ptr, mImageSceneDelIcon6Ptr,
-        mImageSceneDelIcon7Ptr, mImageSceneDelIcon8Ptr };
-    return (i >= 0 && i < SCENE_ROW_MAX) ? a[i] : NULL;
-}
+// v6（2026-10-01）：scrollwindow -> listview（部分设备 EasyUI<2.4 无 scrollwindow，listview 全版本可用）
+//   行控件改为 listview 子项（见 obtainListItemData_LvScenes），不再持有逐行指针。
 
 // UTF-8 安全按「显示宽度」截断（汉字 = 1.0，ASCII = 0.55），超宽场景名列表里不撑破行
 static std::string fitUnits(const std::string& s, double maxUnits) {
@@ -119,39 +93,8 @@ static void setErr(const char* text) {
 }
 
 // 一行 = 名称（desc 优先，人读得懂）+ 键名与 3 路开关摘要
-static void fillRow(int i, const SceneDef& def) {
-    std::string title = def.desc.empty() ? def.name : def.desc;
-    title = fitUnits(title, 16.0);                      // 18px，行宽 340 -> 约 16 汉字宽
-    ZKTextView* nm = rowName(i);
-    if (nm != NULL) nm->setText(title.c_str());
-
-    char b[128];
-    char s1[8], s2[8], s3[8];
-    snprintf(s1, sizeof(s1), "%s", def.relays[0] ? "开" : "关");
-    snprintf(s2, sizeof(s2), "%s", def.relays[1] ? "开" : "关");
-    snprintf(s3, sizeof(s3), "%s", def.relays[2] ? "开" : "关");
-    snprintf(b, sizeof(b), "%s - 灯1 %s - 灯2 %s - 灯3 %s", def.name.c_str(), s1, s2, s3);
-    ZKTextView* ds = rowDesc(i);
-    if (ds != NULL) ds->setText(b);
-}
-
-// HA 模式：行显示 HA 情景（面板只读展示，情景/自动化由 HA 执行）
-static void fillRowHa(int i, const std::string& name) {
-    std::string title = fitUnits(name, 16.0);
-    ZKTextView* nm = rowName(i);
-    if (nm != NULL) nm->setText(title.c_str());
-    ZKTextView* ds = rowDesc(i);
-    if (ds != NULL) ds->setText("HA 情景 - 由 HA 执行");
-}
-
+// HA 模式：隐藏新增入口（情景由 HA 管理）。删除钮在 listview 子项里按 sHaList 控制可见性。
 static void hideEditControls() {
-    // HA 模式隐藏删除按钮/图标与新增入口（情景由 HA 管理）
-    for (int i = 0; i < SCENE_ROW_MAX; i++) {
-        ZKButton* dl = rowDel(i);
-        ZKTextView* ic = rowDelIcon(i);
-        if (dl != NULL) dl->setVisible(false);
-        if (ic != NULL) ic->setVisible(false);
-    }
     if (mImageSceneAddBgPtr != NULL) mImageSceneAddBgPtr->setVisible(false);
     if (mImageSceneAddBtnBgPtr != NULL) mImageSceneAddBtnBgPtr->setVisible(false);
     if (mTextScenesAddLabelPtr != NULL) mTextScenesAddLabelPtr->setVisible(false);
@@ -160,57 +103,27 @@ static void hideEditControls() {
     if (mTextScenesHintPtr != NULL) mTextScenesHintPtr->setText("HA 模式：情景由 HA 管理（本页仅展示）");
 }
 
+// v6：行内容改由 obtainListItemData_LvScenes 填充；此处只算数据源 + 触发刷新
 static void refreshList() {
     bool ha = (ConfigStore::getInstance()->runMode() == ConfigStore::MODE_HA);
     int haN = ha ? MqttBridge::getInstance()->haSceneCount() : 0;
-    if (ha && haN > 0) {
-        int n = (haN > SCENE_ROW_MAX) ? SCENE_ROW_MAX : haN;
-        for (int i = 0; i < SCENE_ROW_MAX; i++) {
-            bool has = (i < n);
-            ZKTextView* bg = rowBg(i);
-            ZKTextView* nm = rowName(i);
-            ZKTextView* ds = rowDesc(i);
-            if (bg != NULL) bg->setVisible(has);
-            if (nm != NULL) nm->setVisible(has);
-            if (ds != NULL) ds->setVisible(has);
-            if (has) fillRowHa(i, MqttBridge::getInstance()->haSceneName(i));
-        }
+    sHaList = (ha && haN > 0);
+    if (sHaList) {
+        sListCount = (haN > SCENE_ROW_MAX) ? SCENE_ROW_MAX : haN;
         hideEditControls();
         LOGD("scenes: HA list refreshed, count=%d", haN);
-        return;
+    } else {
+        std::vector<SceneDef> list = SceneManager::getInstance()->scenes();
+        sListCount = (int)list.size();
+        if (sListCount > SCENE_ROW_MAX) sListCount = SCENE_ROW_MAX;
+        LOGD("scenes: list refreshed, count=%d", (int)list.size());
     }
-    std::vector<SceneDef> list = SceneManager::getInstance()->scenes();
-    int n = (int)list.size();
-    if (n > SCENE_ROW_MAX) n = SCENE_ROW_MAX;
-    for (int i = 0; i < SCENE_ROW_MAX; i++) {
-        bool has = (i < n);
-        ZKTextView* bg = rowBg(i);
-        ZKTextView* nm = rowName(i);
-        ZKTextView* ds = rowDesc(i);
-        ZKButton* dl = rowDel(i);
-        ZKTextView* ic = rowDelIcon(i);
-        if (bg != NULL) bg->setVisible(has);
-        if (nm != NULL) nm->setVisible(has);
-        if (ds != NULL) ds->setVisible(has);
-        if (dl != NULL) dl->setVisible(has);
-        if (ic != NULL) ic->setVisible(has);
-        if (has) fillRow(i, list[i]);
-    }
-    LOGD("scenes: list refreshed, count=%d", (int)list.size());
+    if (mLvScenesPtr != NULL) mLvScenesPtr->refreshListView();
 }
 
 static void passDecorations() {
     ZKTextView* pass[] = {
         mTextScenesTitlePtr, mTextScenesTitleEnPtr, mTextScenesListLabelPtr,
-        mImageSceneRowBg1Ptr, mImageSceneRowBg2Ptr, mImageSceneRowBg3Ptr, mImageSceneRowBg4Ptr,
-        mImageSceneRowBg5Ptr, mImageSceneRowBg6Ptr, mImageSceneRowBg7Ptr, mImageSceneRowBg8Ptr,
-        mTextSceneRowName1Ptr, mTextSceneRowName2Ptr, mTextSceneRowName3Ptr, mTextSceneRowName4Ptr,
-        mTextSceneRowName5Ptr, mTextSceneRowName6Ptr, mTextSceneRowName7Ptr, mTextSceneRowName8Ptr,
-        mTextSceneRowDesc1Ptr, mTextSceneRowDesc2Ptr, mTextSceneRowDesc3Ptr, mTextSceneRowDesc4Ptr,
-        mTextSceneRowDesc5Ptr, mTextSceneRowDesc6Ptr, mTextSceneRowDesc7Ptr, mTextSceneRowDesc8Ptr,
-        mImageSceneDelIcon1Ptr, mImageSceneDelIcon2Ptr, mImageSceneDelIcon3Ptr,
-        mImageSceneDelIcon4Ptr, mImageSceneDelIcon5Ptr, mImageSceneDelIcon6Ptr,
-        mImageSceneDelIcon7Ptr, mImageSceneDelIcon8Ptr,
         mTextScenesAddLabelPtr, mImageSceneAddBgPtr, mImageSceneAddBtnBgPtr,
         mTextSceneErrPtr, mTextScenesHintPtr,
         mImageSceneDelDimPtr, mImageSceneDelBoxPtr, mTextSceneDelTitlePtr,
@@ -322,14 +235,50 @@ static void askDelete(int idx) {
     if (mWindowSceneDelPtr != NULL) mWindowSceneDelPtr->showWnd();
 }
 
-static bool onButtonClick_ButtonSceneDel1(ZKButton *p) { (void)p; askDelete(0); return true; }
-static bool onButtonClick_ButtonSceneDel2(ZKButton *p) { (void)p; askDelete(1); return true; }
-static bool onButtonClick_ButtonSceneDel3(ZKButton *p) { (void)p; askDelete(2); return true; }
-static bool onButtonClick_ButtonSceneDel4(ZKButton *p) { (void)p; askDelete(3); return true; }
-static bool onButtonClick_ButtonSceneDel5(ZKButton *p) { (void)p; askDelete(4); return true; }
-static bool onButtonClick_ButtonSceneDel6(ZKButton *p) { (void)p; askDelete(5); return true; }
-static bool onButtonClick_ButtonSceneDel7(ZKButton *p) { (void)p; askDelete(6); return true; }
-static bool onButtonClick_ButtonSceneDel8(ZKButton *p) { (void)p; askDelete(7); return true; }
+// ── listview 三回调（替代原 8 个删除按钮回调）────────────────────────
+static int getListItemCount_LvScenes(const ZKListView* pListView) {
+    (void)pListView;
+    return sListCount;
+}
+
+static void obtainListItemData_LvScenes(ZKListView* pListView, ZKListView::ZKListItem* pListItem, int index) {
+    (void)pListView;
+    if (index < 0 || index >= sListCount) return;
+    ZKListView::ZKListSubItem* name = pListItem->findSubItemByID(ID_SCENES_ItemName);
+    ZKListView::ZKListSubItem* desc = pListItem->findSubItemByID(ID_SCENES_ItemDesc);
+    ZKListView::ZKListSubItem* del  = pListItem->findSubItemByID(ID_SCENES_ItemDel);
+    std::string title, ds;
+    if (sHaList) {
+        std::string nm = MqttBridge::getInstance()->haSceneName(index);
+        title = fitUnits(nm, 16.0);
+        ds = "HA 情景 - 由 HA 执行";
+    } else {
+        std::vector<SceneDef> list = SceneManager::getInstance()->scenes();
+        if (index >= (int)list.size()) return;
+        const SceneDef& def = list[index];
+        title = def.desc.empty() ? def.name : def.desc;
+        title = fitUnits(title, 16.0);
+        char b[128], s1[8], s2[8], s3[8];
+        snprintf(s1, sizeof(s1), "%s", def.relays[0] ? "开" : "关");
+        snprintf(s2, sizeof(s2), "%s", def.relays[1] ? "开" : "关");
+        snprintf(s3, sizeof(s3), "%s", def.relays[2] ? "开" : "关");
+        snprintf(b, sizeof(b), "%s - 灯1 %s - 灯2 %s - 灯3 %s", def.name.c_str(), s1, s2, s3);
+        ds = b;
+    }
+    if (name) name->setText(title.c_str());
+    if (desc) desc->setText(ds.c_str());
+    if (del) del->setVisible(!sHaList);   // HA 模式隐藏删除钮
+}
+
+static void onListItemClick_LvScenes(ZKListView* pListView, int index, int id) {
+    (void)pListView;
+    if (index < 0 || index >= sListCount) return;
+    if (id == ID_SCENES_ItemDel) {
+        askDelete(index);   // 删除钮：二次确认（与原行为一致）
+        return;
+    }
+    // 行主体点击无动作（原 scrollwindow 行主体也无 handler）
+}
 
 static bool onButtonClick_ButtonSceneDelOk(ZKButton *p) {
     (void)p;

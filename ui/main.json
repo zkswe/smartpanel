@@ -169,7 +169,7 @@
       "color3": -1,
       "color4": -1
     },
-    "backgroundPic": "images/ic_sun_g22.png"
+    "backgroundPic": "images/w_sun22.png"
   },
   "textview__5": {
     "id": 50005,
@@ -192,7 +192,7 @@
     "touchable": false,
     "bold": false,
     "italic": false,
-    "text": "晴 26",
+    "text": "获取中",
     "visible": true,
     "rollEnable": false,
     "rollDirection": 1,
@@ -227,7 +227,42 @@
     "touchable": false,
     "bold": false,
     "italic": false,
-    "text": "26.5°C / 58 %",
+    "text": "读取中",
+    "visible": true,
+    "rollEnable": false,
+    "rollDirection": 1,
+    "rollIntervalTime": 150,
+    "rollStep": 5,
+    "bgColorTab": {
+      "color0": -1,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    }
+  },
+  "textview__26": {
+    "id": 50060,
+    "caption": "TextSsAqi",
+    "position": {
+      "left": 0,
+      "top": 356,
+      "width": 480,
+      "height": 24
+    },
+    "alignment": 5,
+    "colorTab": {
+      "color0": 10915593,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    },
+    "fontSize": 18,
+    "touchable": false,
+    "bold": false,
+    "italic": false,
+    "text": "PM2.5 获取中",
     "visible": true,
     "rollEnable": false,
     "rollDirection": 1,
@@ -702,6 +737,111 @@
       "color4": -1
     }
   },
+  "textview__28": {
+    "id": 50062,
+    "caption": "TextSsAlmDate",
+    "position": {
+      "left": 24,
+      "top": 4,
+      "width": 400,
+      "height": 26
+    },
+    "alignment": 5,
+    "colorTab": {
+      "color0": 15527920,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    },
+    "fontSize": 20,
+    "touchable": false,
+    "bold": false,
+    "italic": false,
+    "text": "农历八月廿一 · 戊申日",
+    "visible": true,
+    "rollEnable": false,
+    "rollDirection": 1,
+    "rollIntervalTime": 150,
+    "rollStep": 5,
+    "bgColorTab": {
+      "color0": -1,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    }
+  },
+  "textview__29": {
+    "id": 50063,
+    "caption": "TextSsAlmYi",
+    "position": {
+      "left": 24,
+      "top": 30,
+      "width": 400,
+      "height": 22
+    },
+    "alignment": 5,
+    "colorTab": {
+      "color0": 8118435,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    },
+    "fontSize": 18,
+    "touchable": false,
+    "bold": false,
+    "italic": false,
+    "text": "宜 出行 修造 动土",
+    "visible": true,
+    "rollEnable": false,
+    "rollDirection": 1,
+    "rollIntervalTime": 150,
+    "rollStep": 5,
+    "bgColorTab": {
+      "color0": -1,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    }
+  },
+  "textview__30": {
+    "id": 50064,
+    "caption": "TextSsAlmJi",
+    "position": {
+      "left": 24,
+      "top": 52,
+      "width": 400,
+      "height": 22
+    },
+    "alignment": 5,
+    "colorTab": {
+      "color0": 14715514,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    },
+    "fontSize": 18,
+    "touchable": false,
+    "bold": false,
+    "italic": false,
+    "text": "忌 嫁娶 开市",
+    "visible": true,
+    "rollEnable": false,
+    "rollDirection": 1,
+    "rollIntervalTime": 150,
+    "rollStep": 5,
+    "bgColorTab": {
+      "color0": -1,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    }
+  },
   "textview__20": {
     "id": 50053,
     "caption": "ImageEdTime",
@@ -874,6 +1014,78 @@
     "rollIntervalTime": 150,
     "rollStep": 5,
     "backgroundPic": "images/ss_ed_bar.png",
+    "bgColorTab": {
+      "color0": -1,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    }
+  },
+  "textview__31": {
+    "id": 50065,
+    "caption": "ImageEdAlmanac",
+    "position": {
+      "left": 24,
+      "top": 4,
+      "width": 400,
+      "height": 70
+    },
+    "alignment": 1,
+    "colorTab": {
+      "color0": 15527920,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    },
+    "fontSize": 16,
+    "touchable": false,
+    "bold": false,
+    "italic": false,
+    "text": "",
+    "visible": false,
+    "rollEnable": false,
+    "rollDirection": 1,
+    "rollIntervalTime": 150,
+    "rollStep": 5,
+    "backgroundPic": "images/ss_ed_almanac.png",
+    "bgColorTab": {
+      "color0": -1,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    }
+  },
+  "textview__27": {
+    "id": 50061,
+    "caption": "ImageSsMute",
+    "position": {
+      "left": 424,
+      "top": 20,
+      "width": 40,
+      "height": 40
+    },
+    "alignment": 1,
+    "colorTab": {
+      "color0": 15527152,
+      "color1": -1,
+      "color2": -1,
+      "color3": -1,
+      "color4": -1
+    },
+    "fontSize": 16,
+    "touchable": false,
+    "bold": false,
+    "italic": false,
+    "text": "",
+    "visible": false,
+    "rollEnable": false,
+    "rollDirection": 1,
+    "rollIntervalTime": 150,
+    "rollStep": 5,
+    "backgroundPic": "images/ss_snd_on40.png",
     "bgColorTab": {
       "color0": -1,
       "color1": -1,

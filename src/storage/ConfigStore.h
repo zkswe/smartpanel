@@ -41,23 +41,32 @@ public:
     void setScreensaverBrightness(int v);
 
     // ── 关屏设置（钟工 2026-09-24 口径：整点、支持跨零点、起止相同=无效）──
+    //   ⚠️ 2026-10-02：UI 只暴露「小时」，但内部保留「分钟」刻度（sp_off_*_min），
+    //      使熄屏/唤醒可在分钟级判定（支持子小时窗口 + 快速复测）。UI 写入时段会清零分钟。
     static const int kOffHourMin = 0;
     static const int kOffHourMax = 23;
+    static const int kOffMinMin = 0;
+    static const int kOffMinMax = 59;
     bool offEnabled();
     void setOffEnabled(bool on);
     int offStartHour();                                      // 0..23
     int offEndHour();                                        // 0..23
-    void setOffPeriod(int startHour, int endHour);
-    bool offPeriodValid();                                   // start != end
+    int offStartMin();                                       // 0..59（内部刻度，UI 不暴露；缺省 0）
+    int offEndMin();                                         // 0..59
+    void setOffPeriod(int startHour, int endHour);           // 同时清零分钟（UI=小时级）
+    bool offPeriodValid();                                   // 起止「分钟-of-day」不同
     bool offPeriodLong();                                    // 用于行值摘要
-    // 当前小时是否落在关屏时段（含跨零点；时段无效时恒 false）
-    bool inOffPeriod(int hour);
+    // 当前时刻是否落在关屏时段（含跨零点；时段无效时恒 false）。hour/min 为当前"分-of-day"。
+    bool inOffPeriod(int hour, int min);
 
     // ── 屏保显示项（显隐 + 位置）────────────────────────────
     // item = time / date / temphum / weather / statusbar
     bool ssItemVisible(const std::string& item, bool def);
     void setSsItemVisible(const std::string& item, bool visible);
-    void ssItemPos(const std::string& item, int& x, int& y);  // x=y=-1 表示默认位置
+    // x=y=-100000（哨兵）表示默认位置。⚠️ 负坐标是**合法位置**（钟工 2026-10-01：
+    // 屏保浮层可摆到屏外），所以调用方不能用「x<0」判未设置，要比哨兵。
+    static const int kSsPosUnset = -100000;
+    void ssItemPos(const std::string& item, int& x, int& y);
     void setSsItemPos(const std::string& item, int x, int y);
     void resetSsItemPos(const std::string& item);
     bool ssEditMode();                                       // 屏保位置编辑模式（进程内瞬态）
@@ -118,12 +127,56 @@ public:
     int photoIntervalSec();
     void setPhotoIntervalSec(int sec);
 
-    // ── 环境数据缓存（重启后先显示上次值）──────────────────
+    // ── 屏保声音（视频音轨；2026-10-01）──────────────────────
+    //   默认「开 / 音量 60」：屏保素材是白噪音视频，开箱即有声是预期行为；
+    //   屏保页右上角的喇叭键可一键静音（写的就是这个开关）。
+    static const int kSsVolMin = 0;
+    static const int kSsVolMax = 100;
+    bool ssSoundEnabled();                                   // sp_ss_sound，默认 true
+    void setSsSoundEnabled(bool on);
+    int  ssVolume();                                         // sp_ss_vol，0..100，默认 60
+    void setSsVolume(int v);
+    // 实际播放用：关 -> 0.0，开 -> volume/100
+    float ssVolumeScale();
+
+    // ── 环境数据缓存（重启后先显示上次真实值）────────────────
+    //   注意：这些键在**首次成功联网拉取之前**是空的（sp_wx_ms <= 0）。
+    //   判"有没有真实数据"一律看 weatherUpdatedMs()，不要拿 temp/hum 的兜底值当数据用。
     float cachedTemp();
     float cachedHum();
     std::string cachedWeather();
     void setCachedTempHum(float temp, float hum);
     void setCachedWeather(const std::string& text);
+
+    // ── 天气 / 空气质量（Open-Meteo 真实数据；SensorManager 写入）──
+    //   位置：城市名 + 经纬度。城市名只用于显示/重新解析，实际请求走经纬度。
+    std::string weatherCity();                               // 默认「深圳」
+    void setWeatherCity(const std::string& city);
+    std::string weatherLatLon();                             // "纬度,经度"，默认深圳福田
+    void setWeatherLatLon(const std::string& latlon);
+    int  cachedWxCode();                                     // WMO 天气代码；-1 = 未知
+    void setCachedWxCode(int code);
+    float cachedPm25();                                      // μg/m³；<0 = 无数据
+    float cachedPm10();
+    int   cachedAqi();                                       // US AQI；<0 = 无数据
+    void setCachedAir(float pm25, float pm10, int aqi);
+    long long weatherUpdatedMs();                            // 上次成功拉取的本机墙钟；<=0 = 未知
+    void setWeatherUpdatedMs(long long ms);
+    // 「是否已成功取到过真实数据」——**不要**用 updatedMs>0 判断：
+    //   TimeHelper::getCurrentTime() 在本平台返回的是**被截断成 32 位的 epoch 毫秒**
+    //   （实测为负值），所以时间戳不能当有效性判据。见 SensorManager::hasData()。
+    bool weatherHasData();
+    void setWeatherHasData(bool on);
+
+    // ── 黄历缓存（屏保顶部黄历区；AlmanacManager 写入）─────────────
+    //   一条记录用「k=v\n」多行格式整体存进一个键（字段十几个，逐个开键太碎）。
+    //   判"有没有数据"同样**不要**看时间戳，看 almanacHasData()。
+    std::string almanacBlob();                               // 空 = 从未成功过
+    void setAlmanacBlob(const std::string& blob);
+    long long almanacFetchedMs();                            // 上次成功拉取的本机墙钟；<=0 = 未知
+    void setAlmanacFetchedMs(long long ms);
+    bool almanacHasData();
+    void setAlmanacHasData(bool on);
 
 private:
     ConfigStore() = default;

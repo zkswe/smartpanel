@@ -37,6 +37,7 @@ static void onProtocolDataUpdate(const SProtocolData &data) {
 #include "storage/StoragePreferences.h"
 #include "control/ZKButton.h"
 #include "control/ZKTextView.h"
+#include "control/ZKListView.h"
 #include "wall/WallLink.h"
 
 #include <stdio.h>
@@ -83,23 +84,33 @@ static void wkPlayContentText(char* b, size_t n) {
     else snprintf(b, n, "1 段 · 未设置");
 }
 
-static ZKTextView* wkVal(int i) {
-    ZKTextView* a[6] = { mTextWallRowValue1Ptr, mTextWallRowValue2Ptr, mTextWallRowValue3Ptr,
-                        mTextWallRowValue4Ptr, mTextWallRowValue5Ptr, mTextWallRowValue6Ptr };
-    return (i >= 1 && i <= 6) ? a[i - 1] : NULL;
+// v6（2026-10-01）：scrollwindow -> listview（部分设备 EasyUI<2.4 无 scrollwindow，listview 全版本可用）
+//   行模板三子项：ItemBg(背景图) / ItemLabel(左标签) / ItemValue(右值)；数据由 obtainListItemData 逐行填充。
+static const char* WK_LABELS[6] = {
+    "拼接联动", "组名", "本机序号", "排布", "角色", "播放内容"
+};
+
+// 行6「播放内容」文案缓存（避免 obtainListItemData 在滚动时反复读盘）
+static std::string gWkPlayContent = "1 段 · 未设置";
+
+// 取第 row(1..6) 行的值文本（与旧 wkVal 逻辑等价）
+static void wkRowValue(int row, char* b, size_t n) {
+    switch (row) {
+    case 1: snprintf(b, n, "%s", wkEn() ? "开启" : "关闭"); break;
+    case 2: snprintf(b, n, "%s", wkGroup().c_str()); break;
+    case 3: snprintf(b, n, "%d / %d", wkIdx(), wkN()); break;
+    case 4: snprintf(b, n, "1x%d", wkN()); break;
+    case 5: snprintf(b, n, "%s", wkMaster() ? "主机" : "从机"); break;
+    case 6: snprintf(b, n, "%s", gWkPlayContent.c_str()); break;
+    default: b[0] = '\0'; break;
+    }
 }
 
 static void wkRefresh() {
     char b[128];
-    if (wkVal(1)) wkVal(1)->setText(wkEn() ? "开启" : "关闭");
-    if (wkVal(2)) wkVal(2)->setText(wkGroup().c_str());
-    snprintf(b, sizeof(b), "%d / %d", wkIdx(), wkN());
-    if (wkVal(3)) wkVal(3)->setText(b);
-    snprintf(b, sizeof(b), "1x%d", wkN());
-    if (wkVal(4)) wkVal(4)->setText(b);
-    if (wkVal(5)) wkVal(5)->setText(wkMaster() ? "主机" : "从机");
-    wkPlayContentText(b, sizeof(b));                     // v5：行6 = 播放内容（K 段 · 总 X.Xs）
-    if (wkVal(6)) wkVal(6)->setText(b);
+    wkPlayContentText(b, sizeof(b));                     // v5：行6 = 播放内容（K 段 · 总 X.Xs），先缓存
+    gWkPlayContent = b;
+    if (mLvWallPtr != NULL) mLvWallPtr->refreshListView();   // v6：行值改由 obtainListItemData 填充
 
     if (mTextWallStatusPtr != NULL) {
         WallLink::PlaylistInfo pi;
@@ -211,12 +222,29 @@ static bool wkRowTap(int row) {
     return true;
 }
 
-static bool onButtonClick_ButtonWallRow1(ZKButton* p) { (void)p; return wkRowTap(1); }
-static bool onButtonClick_ButtonWallRow2(ZKButton* p) { (void)p; return wkRowTap(2); }
-static bool onButtonClick_ButtonWallRow3(ZKButton* p) { (void)p; return wkRowTap(3); }
-static bool onButtonClick_ButtonWallRow4(ZKButton* p) { (void)p; return wkRowTap(4); }
-static bool onButtonClick_ButtonWallRow5(ZKButton* p) { (void)p; return wkRowTap(5); }
-static bool onButtonClick_ButtonWallRow6(ZKButton* p) { (void)p; return wkRowTap(6); }
+// ── listview 三回调（替代原 6 个按钮行回调）────────────────────────
+static int getListItemCount_LvWall(const ZKListView* pListView) {
+    (void)pListView;
+    return 6;
+}
+
+static void obtainListItemData_LvWall(ZKListView* pListView, ZKListView::ZKListItem* pListItem, int index) {
+    (void)pListView;
+    if (index < 0 || index > 5) return;
+    ZKListView::ZKListSubItem* label = pListItem->findSubItemByID(ID_WALL_ItemLabel);
+    ZKListView::ZKListSubItem* value = pListItem->findSubItemByID(ID_WALL_ItemValue);
+    if (label) label->setText(WK_LABELS[index]);
+    char b[128];
+    wkRowValue(index + 1, b, sizeof(b));
+    if (value) value->setText(b);
+}
+
+static void onListItemClick_LvWall(ZKListView* pListView, int index, int id) {
+    (void)pListView;
+    (void)id;   // 行内无独立可点子项，整行点击即 index 对应的配置项
+    if (index < 0 || index > 5) return;
+    wkRowTap(index + 1);   // 内部会改配置并 wkRefresh() -> refreshListView()
+}
 
 static bool onButtonClick_ButtonWallBack(ZKButton* p) { (void)p; EASYUICONTEXT->goBack(); return true; }
 static bool onButtonClick_ButtonWallBack2(ZKButton* p) { (void)p; EASYUICONTEXT->goBack(); return true; }

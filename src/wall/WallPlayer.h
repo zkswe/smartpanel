@@ -76,6 +76,18 @@ public:
     int clipCount();           // 本节目 clip 数（单 clip 模式 = 1）
     std::string clipFile();    // 当前实际在播的文件（playlist 模式下随 clip 切换）
 
+    // —— 音画同步（2026-10-01）——
+    //   simple-player 是**异步**起播：start() 只起线程，线程里要建 H264Parser(解析 moov)
+    //   + mi::H264Player(MI_VDEC_InitDev / 2MB 码流缓冲 / DISP 图层 enable / bind)，这一段
+    //   要几百 ms 才有第一帧画面；而屏保音频是另一个播放器（ss_audio -> ZKMediaPlayer），
+    //   立刻 play() 就会"画面还没出来声音先响"。这里给出**画面真正开始喂流的时刻**做握手：
+    //   `mi::H264Player::stream()` 第一次被调用（= 解码器已经在吃第一包）记为 firstFeedMs()。
+    //   上层（mainLogic）据此延后起播 mp3，音画就能对上。
+    static void noteFirstFeed();   // 首次 stream() 调用点（内部只记第一次，重复调用无副作用）
+    static void resetFirstFeed();  // 每次 start() 时清零
+    static long long firstFeedMs();// 单调钟 ms；0 = 本次尚未开始喂流
+    static long long monoMs();     // 单调钟 ms（CLOCK_MONOTONIC）——给上层算等待时长用
+
 private:
     WallPlayer();
     ~WallPlayer();

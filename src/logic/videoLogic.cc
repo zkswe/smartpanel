@@ -19,8 +19,11 @@ INIT_UI_EVENT_BINDINGS
 #include "entry/EasyUIContext.h"
 #include "storage/ConfigStore.h"
 #include "storage/StoragePreferences.h"
+#include "system/MediaGuard.h"     // 已标记「不可播」素材的列出/取消标记
+#include "logic/ui_text.h"         // setTextIfChanged（判据 = 控件实际文本）
 #include "control/ZKButton.h"
 #include "control/ZKTextView.h"
+#include "control/ZKListView.h"
 
 #include <stdio.h>
 #include <ctype.h>
@@ -29,7 +32,11 @@ INIT_UI_EVENT_BINDINGS
 
 #define KEY_VIDEO_SEL "sp_video_sel"
 #define KEY_VIDEO_INT "sp_video_int"
-#define MAX_ROWS      12
+// ★ 2026-10-01：原来是 12，且"可播"和"已标记 .bad"共用这个上限 —— 实测被撑爆：
+//   /video 9 条可播 + 2 个 .bad，/album 第 1 条可播就凑满 12 → 手机新上传的第 2、3 条
+//   **整条不进列表**（钟工："手机小程序上传的视频在屏保视频选择页面看不到"）。
+//   listview 本身可滚动，不需要硬上限；改 64 只当兜底，并让可播项先占位。
+#define MAX_ROWS      64
 
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
     {0, 1000},
@@ -39,48 +46,13 @@ static const int kIntervalSec[6] = { 0, 3600, 7200, 21600, 43200, 86400 };
 
 static std::vector<std::string> sFiles;
 static std::vector<std::string> sSel;      // 选中路径（空 = 全选）
+// 已标记「不可播」的素材（*.bad）：由屏保侧的 MediaGuard 标记（编码不支持/容器损坏/播放失败）。
+// 列表里照样列出来但置灰、不可选中，**点一下 = 取消标记**（改名还原后下次扫描回到可播行）。
+static std::vector<std::string> sBad;
 static int sInterval = 0;
 
-static ZKButton* rowBtn(int i) {
-    ZKButton* a[MAX_ROWS] = { mButtonVidRow1Ptr, mButtonVidRow2Ptr, mButtonVidRow3Ptr, mButtonVidRow4Ptr,
-                              mButtonVidRow5Ptr, mButtonVidRow6Ptr, mButtonVidRow7Ptr, mButtonVidRow8Ptr,
-                              mButtonVidRow9Ptr, mButtonVidRow10Ptr, mButtonVidRow11Ptr, mButtonVidRow12Ptr };
-    return (i >= 0 && i < MAX_ROWS) ? a[i] : NULL;
-}
-static ZKTextView* rowName(int i) {
-    ZKTextView* a[MAX_ROWS] = { mTextVidRowName1Ptr, mTextVidRowName2Ptr, mTextVidRowName3Ptr, mTextVidRowName4Ptr,
-                                mTextVidRowName5Ptr, mTextVidRowName6Ptr, mTextVidRowName7Ptr, mTextVidRowName8Ptr,
-                                mTextVidRowName9Ptr, mTextVidRowName10Ptr, mTextVidRowName11Ptr, mTextVidRowName12Ptr };
-    return (i >= 0 && i < MAX_ROWS) ? a[i] : NULL;
-}
-static ZKTextView* rowChk(int i) {
-    ZKTextView* a[MAX_ROWS] = { mImageVidRowChk1Ptr, mImageVidRowChk2Ptr, mImageVidRowChk3Ptr, mImageVidRowChk4Ptr,
-                                mImageVidRowChk5Ptr, mImageVidRowChk6Ptr, mImageVidRowChk7Ptr, mImageVidRowChk8Ptr,
-                                mImageVidRowChk9Ptr, mImageVidRowChk10Ptr, mImageVidRowChk11Ptr, mImageVidRowChk12Ptr };
-    return (i >= 0 && i < MAX_ROWS) ? a[i] : NULL;
-}
-static ZKTextView* rowBg(int i) {
-    ZKTextView* a[MAX_ROWS] = { mImageVidRowBg1Ptr, mImageVidRowBg2Ptr, mImageVidRowBg3Ptr, mImageVidRowBg4Ptr,
-                                mImageVidRowBg5Ptr, mImageVidRowBg6Ptr, mImageVidRowBg7Ptr, mImageVidRowBg8Ptr,
-                                mImageVidRowBg9Ptr, mImageVidRowBg10Ptr, mImageVidRowBg11Ptr, mImageVidRowBg12Ptr };
-    return (i >= 0 && i < MAX_ROWS) ? a[i] : NULL;
-}
-
-// 行编号（01..12）与「视/图」徐标（设计说明书 3.4.5：图片 = 绿底）
-static ZKTextView* rowIdx(int i) {
-    ZKTextView* a[MAX_ROWS] = { mTextVidRowIdx1Ptr, mTextVidRowIdx2Ptr, mTextVidRowIdx3Ptr,
-                                mTextVidRowIdx4Ptr, mTextVidRowIdx5Ptr, mTextVidRowIdx6Ptr,
-                                mTextVidRowIdx7Ptr, mTextVidRowIdx8Ptr, mTextVidRowIdx9Ptr,
-                                mTextVidRowIdx10Ptr, mTextVidRowIdx11Ptr, mTextVidRowIdx12Ptr };
-    return (i >= 0 && i < MAX_ROWS) ? a[i] : NULL;
-}
-static ZKTextView* rowBadge(int i) {
-    ZKTextView* a[MAX_ROWS] = { mImageVidRowBadge1Ptr, mImageVidRowBadge2Ptr, mImageVidRowBadge3Ptr,
-                                mImageVidRowBadge4Ptr, mImageVidRowBadge5Ptr, mImageVidRowBadge6Ptr,
-                                mImageVidRowBadge7Ptr, mImageVidRowBadge8Ptr, mImageVidRowBadge9Ptr,
-                                mImageVidRowBadge10Ptr, mImageVidRowBadge11Ptr, mImageVidRowBadge12Ptr };
-    return (i >= 0 && i < MAX_ROWS) ? a[i] : NULL;
-}
+// v6（2026-10-01）：scrollwindow -> listview（部分设备 EasyUI<2.4 无 scrollwindow，listview 全版本可用）
+//   行控件改为 listview 子项（见 obtainListItemData_LvVid），不再持有逐行指针。
 
 // 图片素材（与 mainLogic 的 isImagePath 同一套扩展名）
 static bool isImageFile(const std::string& p) {
@@ -118,25 +90,57 @@ static ZKTextView* photoText(int i) {
 
 static void scanVideos() {
     sFiles.clear();
+    sBad.clear();
     const char* dirs[] = { "/mnt/sdnand/video", "/mnt/sdnand/album", "/mnt/extsd/video", "/mnt/usb1/video" };
-    const char* pats[] = { "*.mp4", "*.avi", "*.mkv", "*.mov",
-                           "*.jpg", "*.jpeg", "*.png", "*.bmp" };
-    for (size_t d = 0; d < sizeof(dirs) / sizeof(dirs[0]); d++) {
-        for (size_t q = 0; q < sizeof(pats) / sizeof(pats[0]); q++) {
-            std::string cmd = std::string("ls ") + dirs[d] + "/" + pats[q] + " 2>/dev/null";
-            FILE* fp = popen(cmd.c_str(), "r");
-            if (fp == NULL) continue;
-            char line[512];
-            while (fgets(line, sizeof(line), fp) && sFiles.size() < MAX_ROWS) {
-                std::string p = line;
-                while (!p.empty() && (p.back() == '\n' || p.back() == '\r')) p.pop_back();
-                if (!p.empty()) sFiles.push_back(p);
+    // ★ 两趟扫（2026-10-01）：**先收全部"可播"素材，再收"已标记 .bad"**。
+    //   原来是一趟（每个目录里 可播→图片→.bad 依次收），/video 的 2 个 .bad 会先占掉名额，
+    //   把 /album 里手机新上传的素材挤出去 —— 现场就是这么"看不到小程序上传的视频"的。
+    const char* patsOk[]  = { "*.mp4", "*.avi", "*.mkv", "*.mov",
+                              "*.jpg", "*.jpeg", "*.png", "*.bmp" };
+    const char* patsBad[] = { "*.mp4.bad", "*.avi.bad", "*.mkv.bad", "*.mov.bad" };
+    for (int pass = 0; pass < 2; pass++) {
+        const char** pats = (pass == 0) ? patsOk : patsBad;
+        const size_t pn = (pass == 0) ? (sizeof(patsOk) / sizeof(patsOk[0]))
+                                      : (sizeof(patsBad) / sizeof(patsBad[0]));
+        for (size_t d = 0; d < sizeof(dirs) / sizeof(dirs[0]); d++) {
+            for (size_t q = 0; q < pn; q++) {
+                std::string cmd = std::string("ls ") + dirs[d] + "/" + pats[q] + " 2>/dev/null";
+                FILE* fp = popen(cmd.c_str(), "r");
+                if (fp == NULL) continue;
+                char line[512];
+                while (fgets(line, sizeof(line), fp)) {
+                    std::string p = line;
+                    while (!p.empty() && (p.back() == '\n' || p.back() == '\r')) p.pop_back();
+                    if (p.empty()) continue;
+                    if (sFiles.size() + sBad.size() >= (size_t)MAX_ROWS) continue;
+                    if (pass == 1) sBad.push_back(p);
+                    else           sFiles.push_back(p);
+                }
+                pclose(fp);
             }
-            pclose(fp);
         }
     }
-    LOGD("videoLogic: found %d files", (int)sFiles.size());
+    LOGD("videoLogic: found %d playable + %d marked-bad", (int)sFiles.size(), (int)sBad.size());
 }
+
+// ★ 素材目录签名（2026-10-01）：进页面时自动刷新用 —— 手机/小程序上传后不必退出重进。
+//   只做**一次** popen（列目录 + 大小），比每 2s 全量重扫（十几个 popen）便宜得多。
+static std::string mediaSig() {
+    std::string sig;
+    FILE* fp = popen("ls -l /mnt/sdnand/video /mnt/sdnand/album /mnt/extsd/video /mnt/usb1/video 2>/dev/null", "r");
+    if (fp == NULL) return sig;
+    char line[512];
+    while (fgets(line, sizeof(line), fp)) {
+        for (const char* c = line; *c != '\0'; ++c) sig.push_back(*c);
+    }
+    pclose(fp);
+    return sig;
+}
+static std::string sLastSig;
+static int sSigTicks = 0;
+
+// 列表总行数 = 可播 + 已标记（已标记排在最后）
+static int rowCount() { return (int)(sFiles.size() + sBad.size()); }
 
 static void loadConfig() {
     sSel.clear();
@@ -173,44 +177,21 @@ static void saveConfig() {
 }
 
 static void refreshRows() {
-    for (int i = 0; i < MAX_ROWS; i++) {
-        ZKButton* b = rowBtn(i);
-        ZKTextView* n = rowName(i);
-        ZKTextView* c = rowChk(i);
-        ZKTextView* g = rowBg(i);
-        bool has = i < (int)sFiles.size();
-        if (b != NULL) b->setVisible(has);
-        if (g != NULL) g->setVisible(has);      // 空行连同底条一起藏：列表只显示实际条目
-        if (n != NULL) {
-            n->setVisible(has);
-            if (has) {
-                size_t slash = sFiles[i].find_last_of('/');
-                n->setText((slash == std::string::npos ? sFiles[i] : sFiles[i].substr(slash + 1)).c_str());
-                n->setTextColor(isSelected(i) ? 0x7BE0A3 : 0xECECF0);
-            }
-        }
-        if (c != NULL) c->setVisible(has && isSelected(i));
+    if (mLvVidPtr != NULL) mLvVidPtr->refreshListView();   // v6：行内容改由 obtainListItemData_LvVid 填充
+}
 
-        // 编号 + 徐标（图片 = 绿底深字 / 视频 = 灰底浅字）
-        ZKTextView* ix = rowIdx(i);
-        ZKTextView* bd = rowBadge(i);
-        if (ix != NULL) {
-            ix->setVisible(has);
-            if (has) {
-                char b[8];
-                snprintf(b, sizeof(b), "%02d", i + 1);
-                ix->setText(b);
-            }
-        }
-        if (bd != NULL) {
-            bd->setVisible(has);
-            if (has) {
-                // 图标版（钟工 2026-09-25 11:55）：视频=广播三角、图片=照片图标，不写字
-                bool img = isImageFile(sFiles[i]);
-                bd->setBackgroundPic(img ? "images/badge_image.png" : "images/badge_video.png");
-                bd->setText("");
-            }
-        }
+// 列表上方提示行（TextVidListHint）：本来留空，这里让它说明「有几个素材 / 有几个被标记」
+static void refreshHint() {
+    if (mTextVidListHintPtr == NULL) return;
+    char b[96];
+    if (!sBad.empty()) {
+        snprintf(b, sizeof(b), "已标记 %d 个不可播放，点击该行可恢复", (int)sBad.size());
+        setTextIfChanged(mTextVidListHintPtr, b);
+    } else if (!sFiles.empty()) {
+        snprintf(b, sizeof(b), "共 %d 个素材，点一下选择或取消", (int)sFiles.size());
+        setTextIfChanged(mTextVidListHintPtr, b);
+    } else {
+        setTextIfChanged(mTextVidListHintPtr, "没有找到素材");
     }
 }
 
@@ -235,18 +216,19 @@ static void refreshPhotoDur() {
     }
 }
 
+// 重新读配置 + 重扫素材 + 刷新全部 UI（onUI_init/onUI_show 与"页面内自动刷新"共用）
+static void rescanAll() {
+    loadConfig();
+    scanVideos();
+    refreshRows();
+    refreshHint();
+    refreshInterval();
+    refreshPhotoDur();
+}
+
 static void passDecorations() {
     ZKTextView* pass[] = {
         mTextVidTitlePtr, mTextVidTitleEnPtr, mTextVidListHintPtr, mTextVidIntLabelPtr,
-        mImageVidRowBg1Ptr, mImageVidRowBg2Ptr, mImageVidRowBg3Ptr, mImageVidRowBg4Ptr,
-        mImageVidRowBg5Ptr, mImageVidRowBg6Ptr, mImageVidRowBg7Ptr, mImageVidRowBg8Ptr,
-        mImageVidRowBg9Ptr, mImageVidRowBg10Ptr, mImageVidRowBg11Ptr, mImageVidRowBg12Ptr,
-        mTextVidRowName1Ptr, mTextVidRowName2Ptr, mTextVidRowName3Ptr, mTextVidRowName4Ptr,
-        mTextVidRowName5Ptr, mTextVidRowName6Ptr, mTextVidRowName7Ptr, mTextVidRowName8Ptr,
-        mTextVidRowName9Ptr, mTextVidRowName10Ptr, mTextVidRowName11Ptr, mTextVidRowName12Ptr,
-        mImageVidRowChk1Ptr, mImageVidRowChk2Ptr, mImageVidRowChk3Ptr, mImageVidRowChk4Ptr,
-        mImageVidRowChk5Ptr, mImageVidRowChk6Ptr, mImageVidRowChk7Ptr, mImageVidRowChk8Ptr,
-        mImageVidRowChk9Ptr, mImageVidRowChk10Ptr, mImageVidRowChk11Ptr, mImageVidRowChk12Ptr,
         mImageVidIntBg1Ptr, mImageVidIntBg2Ptr, mImageVidIntBg3Ptr,
         mImageVidIntBg4Ptr, mImageVidIntBg5Ptr, mImageVidIntBg6Ptr,
         mTextVidInt1Ptr, mTextVidInt2Ptr, mTextVidInt3Ptr,
@@ -270,22 +252,18 @@ static void onUI_init() {
     INIT_UI_TIMERS
 #endif // FUN_BUILD
     passDecorations();
-    loadConfig();
-    scanVideos();
-    refreshRows();
-    refreshInterval();
-    refreshPhotoDur();
+    rescanAll();
+    sLastSig = mediaSig();
+    sSigTicks = 0;
 }
 
 static void onUI_intent(const Intent *intentPtr) { (void)intentPtr; }
 
 static void onUI_show() {
     EASYUICONTEXT->setScreensaverEnable(false);   // 子页不进屏保（钟工 09251751-1）
-    loadConfig();
-    scanVideos();
-    refreshRows();
-    refreshInterval();
-    refreshPhotoDur();
+    rescanAll();
+    sLastSig = mediaSig();                        // 记签名：页面里自动刷新用（见 onUI_Timer）
+    sSigTicks = 0;
 }
 
 static void onUI_hide() {
@@ -296,7 +274,20 @@ static void onUI_quit() {
 
 static void onProtocolDataUpdate(const SProtocolData &data) { (void)data; }
 
-static bool onUI_Timer(int id) { (void)id; return true; }
+// ★ 页面里自动刷新（2026-10-01，钟工："手机小程序上传的视频看不到，应该是没有刷新到"）：
+//   原来只在 onUI_show 扫一次 —— 用户上传完不退出页面就永远看不到（而且以前还有 12 行硬上限）。
+//   这里每 2s 比一次目录签名，变了就重扫并重建列表。
+static bool onUI_Timer(int id) {
+    if (id != 0) return true;
+    if (++sSigTicks < 2) return true;             // 2s 一次
+    sSigTicks = 0;
+    const std::string sig = mediaSig();
+    if (sig == sLastSig) return true;
+    sLastSig = sig;
+    LOGD("videoLogic: media changed -> rescan（页面内自动刷新）");
+    rescanAll();
+    return true;
+}
 
 static bool onvideoActivityTouchEvent(const MotionEvent &ev) { (void)ev; return false; }
 
@@ -325,18 +316,58 @@ static void toggleRow(int i) {
     refreshRows();
 }
 
-static bool onButtonClick_ButtonVidRow1(ZKButton *p) { (void)p; toggleRow(0); return true; }
-static bool onButtonClick_ButtonVidRow2(ZKButton *p) { (void)p; toggleRow(1); return true; }
-static bool onButtonClick_ButtonVidRow3(ZKButton *p) { (void)p; toggleRow(2); return true; }
-static bool onButtonClick_ButtonVidRow4(ZKButton *p) { (void)p; toggleRow(3); return true; }
-static bool onButtonClick_ButtonVidRow5(ZKButton *p) { (void)p; toggleRow(4); return true; }
-static bool onButtonClick_ButtonVidRow6(ZKButton *p) { (void)p; toggleRow(5); return true; }
-static bool onButtonClick_ButtonVidRow7(ZKButton *p) { (void)p; toggleRow(6); return true; }
-static bool onButtonClick_ButtonVidRow8(ZKButton *p) { (void)p; toggleRow(7); return true; }
-static bool onButtonClick_ButtonVidRow9(ZKButton *p) { (void)p; toggleRow(8); return true; }
-static bool onButtonClick_ButtonVidRow10(ZKButton *p) { (void)p; toggleRow(9); return true; }
-static bool onButtonClick_ButtonVidRow11(ZKButton *p) { (void)p; toggleRow(10); return true; }
-static bool onButtonClick_ButtonVidRow12(ZKButton *p) { (void)p; toggleRow(11); return true; }
+// ── listview 三回调（替代原 12 个按钮行回调）────────────────────────
+static int getListItemCount_LvVid(const ZKListView* pListView) {
+    (void)pListView;
+    return rowCount();
+}
+
+static void obtainListItemData_LvVid(ZKListView* pListView, ZKListView::ZKListItem* pListItem, int index) {
+    (void)pListView;
+    if (index < 0 || index >= rowCount()) return;
+    const bool bad = (index >= (int)sFiles.size());            // 未尾若干行 = 已标记不可播
+    const std::string& f = bad ? sBad[index - (int)sFiles.size()] : sFiles[index];
+    ZKListView::ZKListSubItem* name  = pListItem->findSubItemByID(ID_VIDEO_ItemName);
+    ZKListView::ZKListSubItem* idx   = pListItem->findSubItemByID(ID_VIDEO_ItemIdx);
+    ZKListView::ZKListSubItem* badge = pListItem->findSubItemByID(ID_VIDEO_ItemBadge);
+    ZKListView::ZKListSubItem* chk   = pListItem->findSubItemByID(ID_VIDEO_ItemCheck);
+    if (name) {
+        size_t slash = f.find_last_of('/');
+        name->setText((slash == std::string::npos ? f : f.substr(slash + 1)).c_str());
+        // 已标记的置灰（次要文字色），可播的按是否选中区分
+        name->setTextColor(bad ? 0x8A8A93 : (isSelected(index) ? 0x7BE0A3 : 0xECECF0));
+    }
+    if (idx) {
+        char b[16];   // %02d 最坏情况需 12 字节（含结束符），8 会触发 -Werror=format-truncation
+        snprintf(b, sizeof(b), "%02d", index + 1);
+        idx->setText(b);
+    }
+    if (badge) {
+        badge->setBackgroundPic(bad ? "images/badge_bad.png"
+                                    : (isImageFile(f) ? "images/badge_image.png" : "images/badge_video.png"));
+    }
+    if (chk) chk->setVisible(!bad && isSelected(index));       // 已标记的不可选中
+}
+
+static void onListItemClick_LvVid(ZKListView* pListView, int index, int id) {
+    (void)pListView;
+    (void)id;
+    if (index < 0 || index >= rowCount()) return;
+    if (index >= (int)sFiles.size()) {                         // 已标记行：点击 = 取消标记（改名还原）
+        const std::string p = sBad[index - (int)sFiles.size()];
+        if (MediaGuard::unmark(p)) {
+            LOGI("videoLogic: 取消标记 %s", p.c_str());
+        } else {
+            LOGW("videoLogic: 取消标记失败 %s", p.c_str());
+        }
+        loadConfig();
+        scanVideos();
+        refreshRows();
+        refreshHint();
+        return;
+    }
+    toggleRow(index);   // 内部 saveConfig + refreshRows() -> refreshListView
+}
 
 static bool onButtonClick_ButtonVidIntN(int idx) {
     if (idx < 0 || idx > 5) return true;

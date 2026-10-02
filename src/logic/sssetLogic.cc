@@ -6,7 +6,7 @@ INIT_UI_EVENT_BINDINGS
 
 /*
  * sssetLogic.cc - 屏保显示子页（ssset.ftu）
- * 5 项显隐（时间/日期/温湿度/天气/设备状态条）存 /data：ss_item_<key> = 1/0。
+ * 6 项显隐（时间/日期/温湿度/天气/设备状态条/黄历）存 /data：ss_item_<key> = 1/0。
  * 屏保页（mainLogic）按同一批键决定浮层显隐。
  */
 
@@ -21,28 +21,29 @@ INIT_UI_EVENT_BINDINGS
 #include <string>
 
 #define KEY_PREFIX "ss_item_"
+#define SS_SET_N   6
 
 static S_ACTIVITY_TIMEER REGISTER_ACTIVITY_TIMER_TAB[] = {
     {0, 1000},
 };
 
-static const char* kKeys[5]   = { "time", "date", "temphum", "weather", "statusbar" };
-static const char* kLabels[5] = { "时间", "日期", "温湿度", "天气", "设备状态条" };
+static const char* kKeys[SS_SET_N]   = { "time", "date", "temphum", "weather", "statusbar", "almanac" };
+static const char* kLabels[SS_SET_N] = { "时间", "日期", "温湿度", "天气", "设备状态条", "黄历" };
 
 static ZKTextView* chipBg(int i) {
-    ZKTextView* a[5] = { mImageSsSetChip1Ptr, mImageSsSetChip2Ptr, mImageSsSetChip3Ptr,
-                         mImageSsSetChip4Ptr, mImageSsSetChip5Ptr };
-    return (i >= 0 && i < 5) ? a[i] : NULL;
+    ZKTextView* a[SS_SET_N] = { mImageSsSetChip1Ptr, mImageSsSetChip2Ptr, mImageSsSetChip3Ptr,
+                                mImageSsSetChip4Ptr, mImageSsSetChip5Ptr, mImageSsSetChip6Ptr };
+    return (i >= 0 && i < SS_SET_N) ? a[i] : NULL;
 }
 static ZKTextView* chipTx(int i) {
-    ZKTextView* a[5] = { mTextSsSetRowValue1Ptr, mTextSsSetRowValue2Ptr, mTextSsSetRowValue3Ptr,
-                         mTextSsSetRowValue4Ptr, mTextSsSetRowValue5Ptr };
-    return (i >= 0 && i < 5) ? a[i] : NULL;
+    ZKTextView* a[SS_SET_N] = { mTextSsSetRowValue1Ptr, mTextSsSetRowValue2Ptr, mTextSsSetRowValue3Ptr,
+                                mTextSsSetRowValue4Ptr, mTextSsSetRowValue5Ptr, mTextSsSetRowValue6Ptr };
+    return (i >= 0 && i < SS_SET_N) ? a[i] : NULL;
 }
 static ZKButton* rowBtn(int i) {
-    ZKButton* a[5] = { mButtonSsSetRow1Ptr, mButtonSsSetRow2Ptr, mButtonSsSetRow3Ptr,
-                       mButtonSsSetRow4Ptr, mButtonSsSetRow5Ptr };
-    return (i >= 0 && i < 5) ? a[i] : NULL;
+    ZKButton* a[SS_SET_N] = { mButtonSsSetRow1Ptr, mButtonSsSetRow2Ptr, mButtonSsSetRow3Ptr,
+                              mButtonSsSetRow4Ptr, mButtonSsSetRow5Ptr, mButtonSsSetRow6Ptr };
+    return (i >= 0 && i < SS_SET_N) ? a[i] : NULL;
 }
 
 static bool itemVisible(int i) {
@@ -51,7 +52,7 @@ static bool itemVisible(int i) {
 }
 
 static void refreshRows() {
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < SS_SET_N; i++) {
         bool on = itemVisible(i);
         ZKTextView* bg = chipBg(i);
         ZKTextView* tx = chipTx(i);
@@ -64,7 +65,7 @@ static void refreshRows() {
 }
 
 static void toggleRow(int i) {
-    if (i < 0 || i > 4) return;
+    if (i < 0 || i >= SS_SET_N) return;
     std::string k = std::string(KEY_PREFIX) + kKeys[i];
     int next = itemVisible(i) ? 0 : 1;
     StoragePreferences::putInt(k, next);
@@ -76,14 +77,14 @@ static void passDecorations() {
     ZKTextView* pass[] = {
         mTextSsSetTitlePtr, mTextSsSetTitleEnPtr,
         mImageSsSetRowBg1Ptr, mImageSsSetRowBg2Ptr, mImageSsSetRowBg3Ptr,
-        mImageSsSetRowBg4Ptr, mImageSsSetRowBg5Ptr,
+        mImageSsSetRowBg4Ptr, mImageSsSetRowBg5Ptr, mImageSsSetRowBg6Ptr,
         mTextSsSetRowLabel1Ptr, mTextSsSetRowLabel2Ptr, mTextSsSetRowLabel3Ptr,
-        mTextSsSetRowLabel4Ptr, mTextSsSetRowLabel5Ptr,
+        mTextSsSetRowLabel4Ptr, mTextSsSetRowLabel5Ptr, mTextSsSetRowLabel6Ptr,
         mImageSsSetChip1Ptr, mImageSsSetChip2Ptr, mImageSsSetChip3Ptr,
-        mImageSsSetChip4Ptr, mImageSsSetChip5Ptr,
+        mImageSsSetChip4Ptr, mImageSsSetChip5Ptr, mImageSsSetChip6Ptr,
         mTextSsSetRowValue1Ptr, mTextSsSetRowValue2Ptr, mTextSsSetRowValue3Ptr,
-        mTextSsSetRowValue4Ptr, mTextSsSetRowValue5Ptr,
-        mTextSsSetHint1Ptr, mTextSsSetHint2Ptr, mImageSsSetEditBgPtr,
+        mTextSsSetRowValue4Ptr, mTextSsSetRowValue5Ptr, mTextSsSetRowValue6Ptr,
+        mTextSsSetHint1Ptr, mImageSsSetEditBgPtr,
     };
     for (size_t i = 0; i < sizeof(pass) / sizeof(pass[0]); i++) {
         if (pass[i] != NULL) {
@@ -116,7 +117,11 @@ static bool onsssetActivityTouchEvent(const MotionEvent &ev) { (void)ev; return 
 // ── 回调 ─────────────────────────────────────────────────
 static bool onButtonClick_ButtonSsSetBack(ZKButton *p) {
     (void)p;
-    EASYUICONTEXT->goBack();
+    // 回「设置」：用 openActivity 而不是 goBack()（钟工 2026-10-01，理由同 settingsLogic 的返回键）——
+    //   「编辑位置」进的是**启动页** mainActivity，栈会被重排（官方 wiki：已在栈中的界面"移动到顶层"），
+    //   goBack() 只能弹到启动界面为止 -> 会掉进屏保画面；
+    //   openActivity 在"栈里还有设置页就移到顶层 / 已被弹掉就新建一个"两种情况下都对。
+    EASYUICONTEXT->openActivity("settingsActivity");
     return true;
 }
 
@@ -133,3 +138,4 @@ static bool onButtonClick_ButtonSsSetRow2(ZKButton *p) { (void)p; toggleRow(1); 
 static bool onButtonClick_ButtonSsSetRow3(ZKButton *p) { (void)p; toggleRow(2); return true; }
 static bool onButtonClick_ButtonSsSetRow4(ZKButton *p) { (void)p; toggleRow(3); return true; }
 static bool onButtonClick_ButtonSsSetRow5(ZKButton *p) { (void)p; toggleRow(4); return true; }
+static bool onButtonClick_ButtonSsSetRow6(ZKButton *p) { (void)p; toggleRow(5); return true; }

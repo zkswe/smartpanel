@@ -40,6 +40,8 @@
 
 #include <cstring>
 
+#include "wall/WallPlayer.h"        // 音画同步：第一包喂流时刻的通知点
+
 namespace mi {
 
 int H264Player::count_ = 0;
@@ -138,6 +140,12 @@ H264Player::~H264Player() {
 }
 
 void H264Player::stream(unsigned char* data, int len) {
+  // ── 音画同步握手（2026-10-01）──────────────────────────────────────────
+  //   这是"解码器开始吃第一包"的唯一时刻，也就是画面即将出现的时刻。
+  //   屏保音频（独立播放器）等到这一刻再起播，就不会"画面还没出来声音先响"。
+  //   只记第一次（noteFirstFeed 内部 CAS），每包调用无副作用。
+  WallPlayer::noteFirstFeed();
+
   MI_VDEC_VideoStream_t stVdecStream = { 0 };
   stVdecStream.pu8Addr = data;
   stVdecStream.u32Len = len;
