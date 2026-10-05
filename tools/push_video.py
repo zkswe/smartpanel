@@ -23,17 +23,48 @@ import subprocess
 import sys
 import tempfile
 
+# ⚠️ Windows 控制台默认 GBK：打印非 GBK 字符会 UnicodeEncodeError 把脚本打崩
+# （实测踩过：探针输出里的符号直接让推送流程在收尾打印时挂掉）。
+try:
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+except Exception:
+    pass
+
 WS = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'))
-DEFAULT_ADB = os.path.join(WS, 'tools', 'FlyThings_mcp_open', 'tools', 'adb', 'adb.exe')
+# 2026-10-01 修：原默认路径 D:\flythings\tools\FlyThings_mcp_open\... 不存在（工具是从另一个工作区搬过来的）
+DEFAULT_ADB = os.path.join(WS, 'fly-things-os_-mcp', 'tools', 'adb', 'adb.exe')
 DEFAULT_SRC = os.path.join(WS, 'projects', 'SmartPanel_HA', '参考资料', 'video')
 DEFAULT_DEST = '/mnt/sdnand/video'
-DEFAULT_DEVICE = '192.0.2.108:5555'
+DEFAULT_DEVICE = '192.168.101.2:5555'   # 本板（SmartPanel 4 寸面板）
 BUSYBOX = os.path.join(WS, 'tools', 'busybox', 'bin', 'z20', 'busybox')
+
+# 推送前规格体检（防止不达标素材进机：设备只吃 H.264 / 480x480 / <=1800 kb/s，
+# 且设备侧无解码器也无转码器 → 进机的死料无法补救）。要处理素材请先跑 tools/media_gate.py。
+MP4_PROBE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mp4_probe.js')
+DEFAULT_NODE = r'C:\Users\zhong\.workbuddy\binaries\node\versions\22.22.2\node.exe'
+MAX_BITRATE = 1800
 
 
 def run(cmd):
     r = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace')
     return r.returncode, (r.stdout or '') + (r.stderr or '')
+
+
+def spec_check(node, src, files, max_bitrate):
+    """对要推的 mp4 跑 tools/mp4_probe.js。返回 (ok, 消息)。没有 mp4 时直接通过。"""
+    mp4s = [os.path.join(src, f) for f in files if f.lower().endswith('.mp4')]
+    if not mp4s:
+        return True, '（本批无 mp4，跳过）'
+    n = node if (node and os.path.isfile(node)) else (shutil.which('node') or DEFAULT_NODE)
+    if not (n and os.path.isfile(n)) or not os.path.isfile(MP4_PROBE):
+        return True, '（找不到 node 或 mp4_probe.js，跳过体检）'
+    rc, out = run([n, MP4_PROBE, '--max-bitrate', str(max_bitrate)] + mp4s)
+    if rc == 0:
+        return True, '通过（%d 个 mp4，H.264 / <=480x480 / <=%d kb/s）' % (len(mp4s), max_bitrate)
+    bad = [ln.strip() for ln in out.splitlines() if ln.strip().startswith('文件      :')]
+    return False, '不达标 %d 个：%s\n%s' % (len(bad) or 1, '; '.join(x.split(':', 1)[1].strip().split()[0] for x in bad),
+                                          '\n'.join(out.splitlines()[-40:]))
 
 
 def main():
@@ -42,14 +73,21 @@ def main():
     ap.add_argument('--dest', default=DEFAULT_DEST)
     ap.add_argument('--device', default=DEFAULT_DEVICE)
     ap.add_argument('--adb', default=DEFAULT_ADB)
+    ap.add_argument('--ext', default='.mp4',
+                    help='要推送的扩展名，可逗号分隔（例：--ext .mp3 推同名音轨；--ext .mp4,.mp3 一起推）')
+    ap.add_argument('--no-check', action='store_true',
+                    help='跳过推送前的规格体检（默认开：不达标的 mp4 直接拦下）')
+    ap.add_argument('--max-bitrate', type=int, default=MAX_BITRATE, help='体检码率上限 kb/s')
+    ap.add_argument('--node', default=None, help='node 可执行文件路径（体检用）')
     ap.add_argument('--dry-run', action='store_true')
     a = ap.parse_args()
 
     if not os.path.isdir(a.src):
         print('源目录不存在: %s' % a.src)
         return 2
+    exts = tuple(e.strip().lower() for e in a.ext.split(',') if e.strip())
     files = sorted(f for f in os.listdir(a.src)
-                   if os.path.isfile(os.path.join(a.src, f)) and f.lower().endswith('.mp4'))
+                   if os.path.isfile(os.path.join(a.src, f)) and f.lower().endswith(exts))
     if not files:
         print('源目录没有 mp4: %s' % a.src)
         return 2
@@ -60,6 +98,19 @@ def main():
     for f in files:
         print('  %-16s %9d B' % (f, os.path.getsize(os.path.join(a.src, f))))
     print('共 %d 个文件 / %.2f MB' % (len(files), total / 1048576.0))
+
+    # ★ 规格体检：不达标的 mp4 一律拦下（设备无解码器/转码器，进了机就是死料）
+    if not a.no_check:
+        ok, msg = spec_check(a.node, a.src, files, a.max_bitrate)
+        if ok:
+            print('规格体检: [OK] %s' % msg)
+        else:
+            print('规格体检: [X] 已拦下 -- %s' % msg)
+            print('\n  请先处理素材再推：')
+            print('    python tools/media_gate.py --src "%s" --out <暂存目录> --mp3' % a.src)
+            print('    （或加 --no-check 强行推送）')
+            return 8
+
     if a.dry_run:
         print('(--dry-run：未推送)')
         return 0

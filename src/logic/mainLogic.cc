@@ -42,7 +42,9 @@ INIT_UI_EVENT_BINDINGS
 #include "logic/ss_audio.h"         // 屏保音频：ZKMediaPlayer(AUDIO)，与 MI 视频解耦
 
 #include <stdio.h>
+#include <stdlib.h>          // atoll（轮播停留锚点的持久化读取）
 #include <ctype.h>
+#include <time.h>            // clock_gettime（轮播停留计时：墙钟，见 ssEpochSec）
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -625,9 +627,79 @@ static int videoIntervalSec() {
 //   ❌ **MI 内核（本机默认）漏了这道门禁**：素材一播完（约 10s，WallPlayer 每轮报一次完成）
 //      就无条件 `playItem(idx+1)` -> 「轮播间隔」在真机上**完全不生效**
 //      （钟工 2026-10-01 现场：间隔设"每天"、选 3 条素材，仍然每 10 秒换一个）。
+//
+// ★★ 2026-10-03 二次修复（钟工现场：101.2 设「12 小时」+ 选中 3 条素材，却一直只播同一个）★★
+//   上一版门禁用的是 `sMediaTicks` —— 1s 心跳的**秒数计数器**，而它在 **每次 onUI_show 都被清零**
+//   （进屏保页走一次；而"触摸点亮 -> 面板跳主页 -> 15s 空闲 -> 回屏保"这条**必然路径**也走一次）。
+//   现场用法下这个计数**永远从 0 重数** -> 1h/6h/12h/每天 这类长档位**永远到不了**
+//   -> 观众看到的就是"一直播同一个文件"（素材本身没毛病：3 条都好好地在 sp_video_sel 里）。
+//   新口径：**停留时长 = 本条素材的锚定时刻到现在的墙钟秒数**，锚点落 /data：
+//     `sp_ss_hold_file`  = 正在计时的素材路径
+//     `sp_ss_hold_start` = 锚定时刻（epoch 秒，字符串存，避开 32 位 int）
+//     `sp_ss_hold_int`   = 锚定时生效的档位（改档位 -> 立刻按新档位重新计时）
+//   ⇒ 页面来回来去 / 息屏 / 甚至重启都不会把计时打回 0；只有"真的换了素材"或"改了档位"才重锚。
+//   ⚠️ 时钟未校时（epoch < 1e9）时锚点记 0 = "无时钟" -> 不切（由 1s 心跳里的补锚兜底）。
+#define KEY_SS_HOLD_FILE  "sp_ss_hold_file"
+#define KEY_SS_HOLD_START "sp_ss_hold_start"
+#define KEY_SS_HOLD_INT   "sp_ss_hold_int"
+static std::string sHoldFile;            // 停留计时对应的素材（空 = 还没锚定）
+static long long   sHoldStartSec = 0;    // 该素材的锚定时刻（epoch 秒；0 = 无有效时钟）
+static int         sHoldIv = -1;         // 锚定时生效的档位（-1 = 还没读过）
+
+// 墙钟秒；**时钟未校时（1970/未同步）一律返回 0**，避免把脏时间当成"已停留很久"
+static long long ssEpochSec() {
+    struct timespec ts;
+    if (clock_gettime(CLOCK_REALTIME, &ts) != 0) return 0;
+    if (ts.tv_sec < 1000000000L) return 0;
+    return (long long)ts.tv_sec;
+}
+// 把停留计时锚定到 path（唯一的重锚动作）
+static void ssHoldAnchor(const std::string& path) {
+    sHoldFile = path;
+    sHoldStartSec = ssEpochSec();
+    sHoldIv = videoIntervalSec();
+    StoragePreferences::putString(KEY_SS_HOLD_FILE, path);
+    char b[32];
+    snprintf(b, sizeof(b), "%lld", sHoldStartSec);
+    StoragePreferences::putString(KEY_SS_HOLD_START, b);
+    StoragePreferences::putInt(KEY_SS_HOLD_INT, sHoldIv);
+    LOGI("ss hold: anchor %s -> start=%lld iv=%ds", path.c_str(), sHoldStartSec, sHoldIv);
+}
+// 开机/进页时从 /data 恢复（重启不打断 12 小时这种长档位）
+static void ssHoldLoad() {
+    sHoldFile = StoragePreferences::getString(KEY_SS_HOLD_FILE, "");
+    sHoldStartSec = atoll(StoragePreferences::getString(KEY_SS_HOLD_START, "0").c_str());
+    if (sHoldStartSec < 0) sHoldStartSec = 0;
+    sHoldIv = StoragePreferences::getInt(KEY_SS_HOLD_INT, -1);
+    LOGD("ss hold: load file=%s start=%lld iv=%d", sHoldFile.c_str(), sHoldStartSec, sHoldIv);
+}
+// 唯一的调用点 = playItem() 定下"真正要播的素材"处：换素材 / 改档位 / 首次 才重锚
+static void ssHoldSyncTo(const std::string& path) {
+    if (path.empty()) return;
+    if (ssEpochSec() <= 0) return;      // 时钟还没校好（开机头几秒）-> 不写盘，等下一轮补锚
+    if (sHoldStartSec <= 0 || path != sHoldFile || videoIntervalSec() != sHoldIv) {
+        ssHoldAnchor(path);
+    }
+}
+// 本条素材已停留多少秒（未锚定 / 无有效时钟 -> 0）
+static long long ssHoldElapsedSec() {
+    if (sHoldStartSec <= 0) return 0;
+    const long long now = ssEpochSec();
+    if (now <= 0 || now <= sHoldStartSec) return 0;
+    return now - sHoldStartSec;
+}
 static bool ssDwellHolding() {
     const int iv = videoIntervalSec();
-    return (iv > 0) && (sMediaTicks < iv);
+    if (iv <= 0) return false;                       // 「连续」档：播完即切
+    if (sHoldStartSec <= 0) return true;             // 未锚定/无时钟 -> 这一拍先不切
+    const long long now = ssEpochSec();
+    if (now <= 0) return true;
+    if (now < sHoldStartSec) {                       // 时钟回跳 -> 重锚，别把计时算成负数
+        LOGW("ss hold: 时钟回跳 now=%lld < start=%lld -> 重锚", now, sHoldStartSec);
+        ssHoldAnchor(sHoldFile);
+        return true;
+    }
+    return ssHoldElapsedSec() < (long long)iv;       // 停留未到点 -> 按住
 }
 
 // ── 屏保声音 / 静音键（2026-10-01）──────────────────────────────
@@ -786,6 +858,10 @@ static void playItem(int index, bool force) {
     //   50ms 心跳每轮重对齐音轨、EasyUI 播完回调重播本条，都会把计数清零
     //   -> `sMediaTicks` 永远到不了「轮播间隔」的秒数，间隔形同不存在。
     if (sVideoIdx != prevIdx) sMediaTicks = 0;
+    // ★ 2026-10-03：「轮播间隔」的停留计时锚点跟"真正要播的素材"走 —— 换素材/改档位才重锚，
+    //   同片循环（同片早退分支、50ms 心跳重对齐音轨）走的是同一路径 -> path 不变 -> 不重锚，
+    //   所以 12 小时这种长档位不会被页面来回切换打断。
+    ssHoldSyncTo(path);
     refreshSsMuteVisible();                // 视频才显示静音键（图片素材无声音）
 
     if (isImagePath(path)) {
@@ -1382,6 +1458,7 @@ static void onUI_init() {
     applyFlipWhenIdle("init");
     mediaAudit(true);                         // 开机先预检素材：不可播的当场标记（编码不支持等）
     loadVideoList();
+    ssHoldLoad();                             // ★ 轮播停留计时：从 /data 恢复锚点（重启不打断长档位）
     refreshSsDevNames();
     refreshSsDevStates(true);
     if (mVideoSsPtr != NULL) mVideoSsPtr->setVideoPlayerMessageListener(&sSsVideoListener);
@@ -1642,13 +1719,27 @@ static bool onUI_Timer(int id) {
                         // 按住期间**不消费 cycles 边界**：这一轮的音轨对齐留给 50ms 心跳
                         // （ssSingleLoopAudioTick）。若这里也消费，两边各抢走一半边界 ——
                         // 实测「每天」档下面板每两轮才重新对齐一次音轨 = 隔一轮静音 10 秒。
+                        // 现场可观测性（2026-10-03）：每 60s 打一条"本条已停留 / 还剩多少"，
+                        //   验证 12 小时档确实在按墙钟走（而不是被 onUI_show 反复清零）。
+                        if (sVideos.size() > 1 && videoIntervalSec() > 0) {
+                            const long long el = ssHoldElapsedSec();
+                            const long long rem = (long long)videoIntervalSec() - el;
+                            if (rem >= 0 && (rem % 60) == 0) {
+                                LOGD("ss dwell: idx=%d 已停留 %llds / %ds（还剩 %llds，锚点=%s）",
+                                     sVideoIdx, el, videoIntervalSec(), rem, sHoldFile.c_str());
+                            } else if (rem < 0 && (el % 60) == 0) {
+                                // 已过点但还在等本轮自然结束（见 50ms 心跳消费边界）
+                                LOGD("ss dwell: idx=%d 已停留 %llds 已过 %ds 档位 -> 等本轮播完即切",
+                                     sVideoIdx, el, videoIntervalSec());
+                            }
+                        }
                     } else {
                         sSsMiCycles = cyc;
                         if (sVideos.size() > 1) playItem(sVideoIdx + 1, true);   // 播完即切下一项
                     }
                 }
             } else if (sVideos.size() > 1 && videoIntervalSec() > 0 &&
-                       sMediaTicks >= videoIntervalSec() + SS_DWELL_EOF_GRACE_SEC) {
+                       ssHoldElapsedSec() >= (long long)videoIntervalSec() + SS_DWELL_EOF_GRACE_SEC) {
                 // 兜底（正常走不到）：间隔已到、又多等了 GRACE 秒仍没等到本轮的完成回调
                 //   （播放器没报完成/卡住）-> 强切下一项，别把面板钉死在一个素材上。
                 LOGW("ss[mi]: dwell=%ds 已过 +%ds 仍未收到完成回调 -> 强制切下一条",
@@ -1667,7 +1758,9 @@ static bool onUI_Timer(int id) {
                 if (el >= ph) playItem(sVideoIdx + 1, true);
             } else if (ssPlayerEngine() == SS_PLAYER_EASYUI) {
                 if (iv > 0) {
-                    if (el >= iv) playItem(sVideoIdx + 1, true);
+                    // ★ 2026-10-03：这里也改成"墙钟停留时长"（原来用 sMediaTicks 会被 onUI_show 清零，
+                    //   长档位永远切不动）。sMediaTicks 仍只作为"页面在前台跑了多久"的日志量。
+                    if (ssHoldElapsedSec() >= (long long)iv) playItem(sVideoIdx + 1, true);
                 } else {
                     int dur = (mVideoSsPtr != NULL) ? mVideoSsPtr->getDuration() : 0;
                     if (dur > 0 && el >= dur / 1000 + 1) playItem(sVideoIdx + 1, true);
